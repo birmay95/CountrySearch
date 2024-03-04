@@ -28,7 +28,7 @@ public class Country {
     @Column(name = "gdp")
     private Double gdp;
 
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "country_id")
     private List<City> cities;
 
@@ -38,4 +38,6 @@ public class Country {
         joinColumns = { @JoinColumn(name = "country_id") },
         inverseJoinColumns = { @JoinColumn(name = "nation_id") })
     private List<Nation> nations;
+
+
 }

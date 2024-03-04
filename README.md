@@ -145,7 +145,7 @@ server.error.include-message=always
 
 ## Результаты SonarCloud
 По этой ссылке можно посмотреть результаты SonarCloud:
-https://sonarcloud.io/project/overview?id=birmay95_Search-for-information-by-country
+https://sonarcloud.io/summary/overall?id=birmay95_CountrySearch
 
 ## Команда проекта
 Контакты для связи с разработчиком.

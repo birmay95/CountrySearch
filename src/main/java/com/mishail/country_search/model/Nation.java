@@ -24,8 +24,7 @@ public class Nation {
     @Column(name = "religion")
     private String religion;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-        mappedBy = "nations")
+    @ManyToMany(mappedBy = "nations")
     @JsonIgnore
     private List<Country> countries;
 }

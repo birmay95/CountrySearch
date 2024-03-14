@@ -47,12 +47,11 @@ public class NationService {
         Nation nation = nationRepository.findNationsByName(nationRequest.getName());
 
         if (country.getNations().stream().noneMatch(nationFunc -> nationFunc.getName().equals(nationRequest.getName()))) {
-            if(nation != null) {
+            if (nation != null) {
                 nationRepository.save(nation);
                 country.getNations().add(nation);
                 countryRepository.save(country);
-            }
-            else {
+            } else {
                 nationRepository.save(nationRequest);
                 country.getNations().add(nationRequest);
                 countryRepository.save(country);
@@ -65,26 +64,26 @@ public class NationService {
 
     @Transactional
     public void updateNation(Long nationId,
-                              String name,
-                              String language,
-                              String religion) {
+                             String name,
+                             String language,
+                             String religion) {
         Nation nation = nationRepository.findById(nationId)
                 .orElseThrow(() -> new IllegalStateException(
                         "nation with id " + nationId + " does not exist, that's why you can't update this"));
 
-        if(name != null && !name.isEmpty() && !Objects.equals(nation.getName(), name)) {
+        if (name != null && !name.isEmpty() && !Objects.equals(nation.getName(), name)) {
             Optional<Nation> nationOptional = Optional.ofNullable(nationRepository.findNationsByName(name));
-            if(nationOptional.isPresent()) {
+            if (nationOptional.isPresent()) {
                 throw new IllegalStateException("nation with this name exists");
             }
             nation.setName(name);
         }
 
-        if(language != null && !language.isEmpty() && !Objects.equals(nation.getLanguage(), language)) {
+        if (language != null && !language.isEmpty() && !Objects.equals(nation.getLanguage(), language)) {
             nation.setLanguage(language);
         }
 
-        if(religion != null && !religion.isEmpty() && !Objects.equals(nation.getReligion(), religion)) {
+        if (religion != null && !religion.isEmpty() && !Objects.equals(nation.getReligion(), religion)) {
             nation.setReligion(religion);
         }
     }

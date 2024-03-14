@@ -29,7 +29,7 @@ public class CountryService {
     public void addNewCountry(Country country) {
         Optional<Country> countryOptional = countryRepository
                 .findCountryByName(country.getName());
-        if(countryOptional.isPresent()) {
+        if (countryOptional.isPresent()) {
             throw new IllegalStateException("country exists");
         }
         countryRepository.save(country);
@@ -37,7 +37,7 @@ public class CountryService {
 
     public void deleteCountry(Long countryId) {
         boolean exists = countryRepository.existsById(countryId);
-        if(!exists) {
+        if (!exists) {
             throw new IllegalStateException(
                     "country, which id " + countryId + " can not be deleted, because id does not exist");
         }
@@ -59,27 +59,27 @@ public class CountryService {
                 .orElseThrow(() -> new IllegalStateException(
                         "country with id " + countryId + "can not be updated, because it does not exist"));
 
-        if(name != null && !name.isEmpty() && !Objects.equals(country.getName(), name)) {
+        if (name != null && !name.isEmpty() && !Objects.equals(country.getName(), name)) {
             Optional<Country> countryOptional = countryRepository.findCountryByName(name);
-            if(countryOptional.isPresent()) {
+            if (countryOptional.isPresent()) {
                 throw new IllegalStateException("country with this name exists");
             }
             country.setName(name);
         }
 
-        if(capital != null && !capital.isEmpty() && !Objects.equals(country.getCapital(), capital)) {
+        if (capital != null && !capital.isEmpty() && !Objects.equals(country.getCapital(), capital)) {
             country.setCapital(capital);
         }
 
-        if(population != null && population > 0) {
+        if (population != null && population > 0) {
             country.setPopulation(population);
         }
 
-        if(areaSquareKm != null && areaSquareKm > 0) {
+        if (areaSquareKm != null && areaSquareKm > 0) {
             country.setAreaSquareKm(areaSquareKm);
         }
 
-        if(gdp != null && gdp > 0) {
+        if (gdp != null && gdp > 0) {
             country.setGdp(gdp);
         }
     }

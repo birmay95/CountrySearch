@@ -24,7 +24,7 @@ public class CountryController {
     }
 
     @GetMapping(path = "{id}")
-    public Country getCountryById(@PathVariable("id")Long countryId) {
+    public Country getCountryById(@PathVariable("id") Long countryId) {
         return countryService.getCountryById(countryId);
     }
 
@@ -34,7 +34,7 @@ public class CountryController {
     }
 
     @DeleteMapping(path = "{id}")
-    public void deleteCountry(@PathVariable("id")Long countryId) {
+    public void deleteCountry(@PathVariable("id") Long countryId) {
         countryService.deleteCountry(countryId);
     }
 

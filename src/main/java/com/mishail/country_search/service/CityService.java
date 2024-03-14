@@ -48,8 +48,8 @@ public class CityService {
 
     public void deleteCitiesByCountryId(Long countryId) {
         Country country = countryRepository.findById(countryId)
-                        .orElseThrow(() -> new IllegalStateException(
-                                "country with id " + countryId + " does not exist, that's why you can't delete cities from its"));
+                .orElseThrow(() -> new IllegalStateException(
+                        "country with id " + countryId + " does not exist, that's why you can't delete cities from its"));
 
         country.getCities().clear();
         countryRepository.save(country);
@@ -65,19 +65,19 @@ public class CityService {
                 .orElseThrow(() -> new IllegalStateException(
                         "city with id " + cityId + " does not exist"));
 
-        if(name != null && !name.isEmpty() && !Objects.equals(city.getName(), name)) {
+        if (name != null && !name.isEmpty() && !Objects.equals(city.getName(), name)) {
             Optional<City> cityOptional = cityRepository.findCityByName(name);
-            if(cityOptional.isPresent()) {
+            if (cityOptional.isPresent()) {
                 throw new IllegalStateException("city with this name exists");
             }
             city.setName(name);
         }
 
-        if(population != null && population > 0) {
+        if (population != null && population > 0) {
             city.setPopulation(population);
         }
 
-        if(areaSquareKm != null && areaSquareKm > 0) {
+        if (areaSquareKm != null && areaSquareKm > 0) {
             city.setAreaSquareKm(areaSquareKm);
         }
     }

@@ -33,10 +33,10 @@ public class Country {
     private List<City> cities;
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "country_nations",
-        joinColumns = { @JoinColumn(name = "country_id") },
-        inverseJoinColumns = { @JoinColumn(name = "nation_id") })
+            joinColumns = {@JoinColumn(name = "country_id")},
+            inverseJoinColumns = {@JoinColumn(name = "nation_id")})
     private List<Nation> nations;
 
 

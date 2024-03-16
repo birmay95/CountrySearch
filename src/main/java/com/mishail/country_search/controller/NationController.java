@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -20,7 +21,7 @@ public class NationController {
     }
 
     @GetMapping("countries/{countryId}/nations")
-    public List<Nation> getNationsByCountryId(@PathVariable(value = "countryId") Long countryId) {
+    public Set<Nation> getNationsByCountryId(@PathVariable(value = "countryId") Long countryId) {
         return nationService.getNationsByCountryId(countryId);
     }
 
@@ -30,7 +31,7 @@ public class NationController {
     }
 
     @GetMapping("nations/{nationId}/countries")
-    public List<Country> getCountriesByNationId(@PathVariable(value = "nationId") Long nationId) {
+    public Set<Country> getCountriesByNationId(@PathVariable(value = "nationId") Long nationId) {
         return nationService.getCountriesByNationId(nationId);
     }
 

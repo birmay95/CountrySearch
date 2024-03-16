@@ -8,9 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -20,8 +18,8 @@ public class NationService {
 
     private final CountryRepository countryRepository;
 
-    public List<Nation> getNationsByCountryId(Long countryId) {
-        Country country = countryRepository.findById(countryId)
+    public Set<Nation> getNationsByCountryId(Long countryId) {
+        Country country = countryRepository.findByIdWithNations(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country with id " + countryId + " does not exist, that's why you can't view nations from its"));
         return country.getNations();
@@ -31,16 +29,16 @@ public class NationService {
         return nationRepository.findAll();
     }
 
-    public List<Country> getCountriesByNationId(Long nationId) {
-        Nation nation = nationRepository.findById(nationId)
+    public Set<Country> getCountriesByNationId(Long nationId) {
+        Nation nation = nationRepository.findByIdWithCountriesWithCities(nationId)
                 .orElseThrow(() -> new IllegalStateException(
                         "nation, which id " + nationId + " does not exist, that's why you can't view countries from its"));
-        return nation.getCountries();
+        return new HashSet<>(nation.getCountries());
     }
 
     public void addNewNationByCountryId(Long countryId, Nation nationRequest) {
 
-        Country country = countryRepository.findById(countryId)
+        Country country = countryRepository.findByIdWithNations(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country, which id " + countryId + " does not exist, that's why you can't add nation to its"));
 
@@ -48,7 +46,6 @@ public class NationService {
 
         if (country.getNations().stream().noneMatch(nationFunc -> nationFunc.getName().equals(nationRequest.getName()))) {
             if (nation != null) {
-                nationRepository.save(nation);
                 country.getNations().add(nation);
                 countryRepository.save(country);
             } else {
@@ -88,13 +85,14 @@ public class NationService {
         }
     }
 
+    @Transactional
     public void deleteNation(Long nationId) {
 
-        Nation nation = nationRepository.findById(nationId)
+        Nation nation = nationRepository.findByIdWithCountries(nationId)
                 .orElseThrow(() -> new IllegalStateException(
                         "nation, which id " + nationId + " does not exist, that's why you can't delete its"));
 
-        List<Country> countries = nation.getCountries();
+        List<Country> countries = countryRepository.findCountriesByNationId(nationId);
 
         for (Country country : countries) {
             country.getNations().remove(nation);
@@ -104,9 +102,10 @@ public class NationService {
         nationRepository.delete(nation);
     }
 
+    @Transactional
     public void deleteNationFromCountry(Long countryId, Long nationId) {
 
-        Country country = countryRepository.findById(countryId)
+        Country country = countryRepository.findByIdWithNations(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country with id " + countryId + " doesn't exist, that's why you can't delete its"));
 

@@ -5,7 +5,7 @@ import com.mishail.country_search.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -19,12 +19,12 @@ public class CityController {
     }
 
     @GetMapping(path = "cities")
-    public List<City> getCities() {
+    public Set<City> getCities() {
         return cityService.getCities();
     }
 
     @GetMapping(path = "countries/{countryId}/cities")
-    public List<City> getCitiesByCountryId(@PathVariable(value = "countryId") Long countryId) {
+    public Set<City> getCitiesByCountryId(@PathVariable(value = "countryId") Long countryId) {
         return cityService.getCitiesByCountryId(countryId);
     }
 

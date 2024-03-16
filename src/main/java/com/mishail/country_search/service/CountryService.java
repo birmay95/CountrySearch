@@ -17,11 +17,11 @@ public class CountryService {
     private final CountryRepository countryRepository;
 
     public List<Country> getCountries() {
-        return countryRepository.findAll();
+        return countryRepository.findAllWithCitiesAndNations();
     }
 
     public Country getCountryById(Long countryId) {
-        return countryRepository.findById(countryId)
+        return countryRepository.findByIdWithCitiesAndNations(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country with id " + countryId + "does not exist"));
     }
@@ -36,15 +36,18 @@ public class CountryService {
     }
 
     public void deleteCountry(Long countryId) {
-        boolean exists = countryRepository.existsById(countryId);
-        if (!exists) {
-            throw new IllegalStateException(
-                    "country, which id " + countryId + " can not be deleted, because id does not exist");
-        }
+        Country country = countryRepository.findByIdWithCities(countryId)
+                .orElseThrow(() -> new IllegalStateException(
+                        "country with id " + countryId + "does not exist"));
+        country.getCities().clear();
         countryRepository.deleteById(countryId);
     }
 
     public void deleteCountries() {
+        List<Country> countries = countryRepository.findAllWithCities();
+        for (Country country : countries) {
+            country.getCities().clear();
+        }
         countryRepository.deleteAll();
     }
 

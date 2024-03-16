@@ -1,9 +1,10 @@
 package com.mishail.country_search.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -28,16 +29,17 @@ public class Country {
     @Column(name = "gdp")
     private Double gdp;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "country_id")
-    private List<City> cities;
+    private Set<City> cities;
 
 
     @ManyToMany
+    @JsonIgnoreProperties("countries")
     @JoinTable(name = "country_nations",
             joinColumns = {@JoinColumn(name = "country_id")},
             inverseJoinColumns = {@JoinColumn(name = "nation_id")})
-    private List<Nation> nations;
+    private Set<Nation> nations;
 
 
 }

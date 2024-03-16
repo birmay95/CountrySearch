@@ -8,9 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -20,12 +18,12 @@ public class CityService {
 
     private final CountryRepository countryRepository;
 
-    public List<City> getCities() {
-        return cityRepository.findAll();
+    public Set<City> getCities() {
+        return new HashSet<>(cityRepository.findAll());
     }
 
-    public List<City> getCitiesByCountryId(Long countryId) {
-        Country country = countryRepository.findById(countryId)
+    public Set<City> getCitiesByCountryId(Long countryId) {
+        Country country = countryRepository.findByIdWithCities(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country with id " + countryId + " does not exist, that's why you can't view cities from its"));
         return country.getCities();
@@ -33,7 +31,7 @@ public class CityService {
 
     public void addNewCityByCountryId(Long countryId, City cityRequest) {
 
-        Country country = countryRepository.findById(countryId)
+        Country country = countryRepository.findByIdWithCities(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country, which id " + countryId + " does not exist, that's why you can't add new city"));
 
@@ -47,7 +45,7 @@ public class CityService {
     }
 
     public void deleteCitiesByCountryId(Long countryId) {
-        Country country = countryRepository.findById(countryId)
+        Country country = countryRepository.findByIdWithCities(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country with id " + countryId + " does not exist, that's why you can't delete cities from its"));
 

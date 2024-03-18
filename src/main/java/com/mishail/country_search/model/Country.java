@@ -1,6 +1,5 @@
 package com.mishail.country_search.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,6 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "country")
 public class Country {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,11 +35,8 @@ public class Country {
 
 
     @ManyToMany
-    @JsonIgnoreProperties("countries")
     @JoinTable(name = "country_nations",
             joinColumns = {@JoinColumn(name = "country_id")},
             inverseJoinColumns = {@JoinColumn(name = "nation_id")})
     private Set<Nation> nations;
-
-
 }

@@ -10,7 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface NationRepository extends JpaRepository<Nation, Long> {
-    Nation findNationsByName(String name);
+
+    Nation findNationByName(String name);
 
     @Query("SELECT n FROM Nation n LEFT JOIN FETCH n.countries c LEFT JOIN FETCH c.cities LEFT JOIN FETCH c.nations WHERE n.id = :id")
     Optional<Nation> findByIdWithCountriesWithCities(@Param("id") Long id);

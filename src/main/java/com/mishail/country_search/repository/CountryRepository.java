@@ -15,6 +15,9 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT s FROM Country s WHERE s.name = ?1")
     Optional<Country> findCountryByName(String name);
 
+    @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.cities city WHERE :cityId IN (SELECT ct.id FROM Country c2 JOIN c2.cities ct WHERE c2 = c)")
+    Optional<Country> findCountryWithCitiesByCityId(Long cityId);
+
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.nations LEFT JOIN FETCH c.cities")
     List<Country> findAllWithCitiesAndNations();
 
@@ -22,14 +25,14 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     List<Country> findAllWithCities();
 
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.nations LEFT JOIN FETCH c.cities WHERE c.id = :id")
-    Optional<Country> findByIdWithCitiesAndNations(@Param("id") Long id);
+    Optional<Country> findCountryWithCitiesAndNationsById(@Param("id") Long id);
 
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.nations WHERE c.id = :id")
-    Optional<Country> findByIdWithNations(@Param("id") Long id);
+    Optional<Country> findCountryWithNationsById(@Param("id") Long id);
 
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.cities WHERE c.id = :id")
-    Optional<Country> findByIdWithCities(@Param("id") Long id);
+    Optional<Country> findCountryWithCitiesById(@Param("id") Long id);
 
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.nations n WHERE n.id = :nationId")
-    List<Country> findCountriesByNationId(@Param("nationId") Long nationId);
+    List<Country> findCountriesWithNationsByNationByNationId(@Param("nationId") Long nationId);
 }

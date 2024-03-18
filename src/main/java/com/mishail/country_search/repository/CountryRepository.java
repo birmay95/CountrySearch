@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Long> {
 
-    @Query("SELECT s FROM Country s WHERE s.name = ?1")
+    @Query(value = "SELECT * FROM Country WHERE name = ?1", nativeQuery = true)
     Optional<Country> findCountryByName(String name);
 
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.cities city WHERE :cityId IN (SELECT ct.id FROM Country c2 JOIN c2.cities ct WHERE c2 = c)")
@@ -33,6 +33,6 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.cities WHERE c.id = :id")
     Optional<Country> findCountryWithCitiesById(@Param("id") Long id);
 
-    @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.nations n WHERE n.id = :nationId")
+    @Query("SELECT DISTINCT c FROM Country c LEFT JOIN FETCH c.nations n WHERE EXISTS (SELECT 1 FROM Nation n2 WHERE n2.id = :nationId AND n2 MEMBER OF c.nations)")
     List<Country> findCountriesWithNationsByNationByNationId(@Param("nationId") Long nationId);
 }

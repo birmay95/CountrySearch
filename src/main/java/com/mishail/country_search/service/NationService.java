@@ -31,23 +31,23 @@ public class NationService {
 
         for (Country country : countries) {
             if (cacheService.containsKey(ALL_NATIONS_BY_COUNTRY_ID + country.getId())) {
-                cacheService.evict(ALL_NATIONS_BY_COUNTRY_ID + country.getId());
+                cacheService.remove(ALL_NATIONS_BY_COUNTRY_ID + country.getId());
             }
             if (cacheService.containsKey("countryId_" + country.getId())) {
-                cacheService.evict("countryId_" + country.getId());
+                cacheService.remove("countryId_" + country.getId());
             }
         }
 
         if (cacheService.containsKey(ALL_NATIONS)) {
-            cacheService.evict(ALL_NATIONS);
+            cacheService.remove(ALL_NATIONS);
         }
 
         if (cacheService.containsKey(ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
-            cacheService.evict(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
+            cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
         }
 
         if (cacheService.containsKey("allCountries")) {
-            cacheService.evict("allCountries");
+            cacheService.remove("allCountries");
         }
     }
 

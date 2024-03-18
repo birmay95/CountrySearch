@@ -71,7 +71,7 @@ public class CountryService {
         Country country = countryRepository.findCountryWithCitiesById(countryId)
                 .orElseThrow(() -> new IllegalStateException(
                         "country, which id " + countryId + " does not exist"));
-        cacheService.evict(COUNTRY_ID + country.getId());
+        cacheService.remove(COUNTRY_ID + country.getId());
         if (cacheService.containsKey(ALL_COUNTRIES)) {
             List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
             countries.remove(country);

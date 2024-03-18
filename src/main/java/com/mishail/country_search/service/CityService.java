@@ -31,7 +31,7 @@ public class CityService {
             cacheService.put(ALL_CITIES_BY_COUNTRY_ID + country.getId(), country.getCities());
 
         if (cacheService.containsKey("allCountries")) {
-            cacheService.evict("allCountries");
+            cacheService.remove("allCountries");
         }
 
         if (cacheService.containsKey("countryId_" + country.getId()))

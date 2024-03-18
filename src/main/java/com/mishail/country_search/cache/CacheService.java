@@ -2,13 +2,13 @@ package com.mishail.country_search.cache;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class CacheService {
 
-    private final Map<String, Object> cache = new ConcurrentHashMap<>();
+    private final HashMap<String, Object> cache = new HashMap<>();
 
     public void put(String key, Object value) {
         cache.put(key, value);
@@ -22,7 +22,7 @@ public class CacheService {
         return cache.containsKey(key);
     }
 
-    public void evict(String key) {
+    public void remove(String key) {
         cache.remove(key);
     }
 

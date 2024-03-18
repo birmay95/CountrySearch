@@ -21,26 +21,28 @@ public class CountryService {
 
     private final CacheService cacheService;
 
+    private static final String ALL_COUNTRIES = "allCountries";
+    private static final String COUNTRY_ID = "countryId_";
+
+
     public List<Country> getCountries() {
-        String cacheKey = "allCountries";
-        if (cacheService.containsKey(cacheKey)) {
-            return (List<Country>) cacheService.get(cacheKey);
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            return (List<Country>) cacheService.get(ALL_COUNTRIES);
         } else {
             List<Country> countries = countryRepository.findAllWithCitiesAndNations();
-            cacheService.put(cacheKey, countries);
+            cacheService.put(ALL_COUNTRIES, countries);
             return countries;
         }
     }
 
     public Country getCountryById(Long countryId) {
-        String cacheKey = "countryId_" + countryId;
-        if (cacheService.containsKey(cacheKey)) {
-            return (Country) cacheService.get(cacheKey);
+        if (cacheService.containsKey(COUNTRY_ID + countryId)) {
+            return (Country) cacheService.get(COUNTRY_ID + countryId);
         } else {
             Country country = countryRepository.findCountryWithCitiesAndNationsById(countryId)
                     .orElseThrow(() -> new IllegalStateException(
                             "country with id " + countryId + "does not exist"));
-            cacheService.put(cacheKey, country);
+            cacheService.put(COUNTRY_ID + countryId, country);
             return country;
         }
     }
@@ -56,25 +58,24 @@ public class CountryService {
         if (country.getCities() == null)
             country.setCities(new HashSet<>());
         countryRepository.save(country);
-        if (cacheService.containsKey("allCountries")) {
-            List<Country> countries = (List<Country>) cacheService.get("allCountries");
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
             countries.add(country);
-            cacheService.put("allCountries", countries);
+            cacheService.put(ALL_COUNTRIES, countries);
         }
-        String cacheKey = "countryId_" + country.getId();
-        cacheService.put(cacheKey, country);
+        cacheService.put(COUNTRY_ID + country.getId(), country);
     }
 
     @Transactional
     public void deleteCountry(Long countryId) {
         Country country = countryRepository.findCountryWithCitiesById(countryId)
                 .orElseThrow(() -> new IllegalStateException(
-                        "country with id " + countryId + " does not exist"));
-        cacheService.evict("countryId_" + country.getId());
-        if (cacheService.containsKey("allCountries")) {
-            List<Country> countries = (List<Country>) cacheService.get("allCountries");
+                        "country, which id " + countryId + " does not exist"));
+        cacheService.evict(COUNTRY_ID + country.getId());
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
             countries.remove(country);
-            cacheService.put("allCountries", countries);
+            cacheService.put(ALL_COUNTRIES, countries);
         }
         country.getCities().clear();
         countryRepository.deleteById(countryId);
@@ -127,13 +128,12 @@ public class CountryService {
             countryChanged.setGdp(gdp);
         }
 
-        if (cacheService.containsKey("allCountries")) {
-            List<Country> countries = (List<Country>) cacheService.get("allCountries");
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
             countries.remove(countryBeforeChanges);
             countries.add(countryChanged);
-            cacheService.put("allCountries", countries);
+            cacheService.put(ALL_COUNTRIES, countries);
         }
-        String cacheKey = "countryId_" + countryChanged.getId();
-        cacheService.put(cacheKey, countryChanged);
+        cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
     }
 }

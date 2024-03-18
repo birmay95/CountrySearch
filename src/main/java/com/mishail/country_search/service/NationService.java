@@ -21,25 +21,29 @@ public class NationService {
 
     private final CacheService cacheService;
 
+    private static final String ALL_NATIONS_BY_COUNTRY_ID = "allNationsByCountryId_";
+    private static final String ALL_COUNTRIES_BY_NATION_ID = "allCountriesByNationId_";
+    private static final String ALL_NATIONS = "allNations";
+
     private void cleanCache(Long nationId, Nation nation) {
 
         List<Country> countries = countryRepository.findCountriesWithNationsByNationByNationId(nationId);
 
         for (Country country : countries) {
-            if (cacheService.containsKey("allNationsByCountryId_" + country.getId())) {
-                cacheService.evict("allNationsByCountryId_" + country.getId());
+            if (cacheService.containsKey(ALL_NATIONS_BY_COUNTRY_ID + country.getId())) {
+                cacheService.evict(ALL_NATIONS_BY_COUNTRY_ID + country.getId());
             }
             if (cacheService.containsKey("countryId_" + country.getId())) {
                 cacheService.evict("countryId_" + country.getId());
             }
         }
 
-        if (cacheService.containsKey("allNations")) {
-            cacheService.evict("allNations");
+        if (cacheService.containsKey(ALL_NATIONS)) {
+            cacheService.evict(ALL_NATIONS);
         }
 
-        if (cacheService.containsKey("allCountriesByNationId_" + nation.getId())) {
-            cacheService.evict("allCountriesByNationId_" + nation.getId());
+        if (cacheService.containsKey(ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
+            cacheService.evict(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
         }
 
         if (cacheService.containsKey("allCountries")) {
@@ -49,41 +53,38 @@ public class NationService {
 
     public Set<Nation> getNationsByCountryId(Long countryId) {
 
-        String cacheKey = "allNationsByCountryId_" + countryId;
-        if (cacheService.containsKey(cacheKey)) {
-            return (Set<Nation>) cacheService.get(cacheKey);
+        if (cacheService.containsKey(ALL_NATIONS_BY_COUNTRY_ID + countryId)) {
+            return (Set<Nation>) cacheService.get(ALL_NATIONS_BY_COUNTRY_ID + countryId);
         } else {
             Country country = countryRepository.findCountryWithNationsById(countryId)
                     .orElseThrow(() -> new IllegalStateException(
                             "country, which id " + countryId + " does not exist, that's why you can't view nations from its"));
             Set<Nation> nations = country.getNations();
-            cacheService.put(cacheKey, nations);
+            cacheService.put(ALL_NATIONS_BY_COUNTRY_ID + countryId, nations);
             return nations;
         }
     }
 
     public List<Nation> getNations() {
-        String cacheKey = "allNations";
-        if (cacheService.containsKey(cacheKey)) {
-            return (List<Nation>) cacheService.get(cacheKey);
+        if (cacheService.containsKey(ALL_NATIONS)) {
+            return (List<Nation>) cacheService.get(ALL_NATIONS);
         } else {
             List<Nation> nations = nationRepository.findAll();
-            cacheService.put(cacheKey, nations);
+            cacheService.put(ALL_NATIONS, nations);
             return nations;
         }
     }
 
     public Set<Country> getCountriesByNationId(Long nationId) {
 
-        String cacheKey = "allCountriesByNationId_" + nationId;
-        if (cacheService.containsKey(cacheKey)) {
-            return (Set<Country>) cacheService.get(cacheKey);
+        if (cacheService.containsKey(ALL_COUNTRIES_BY_NATION_ID + nationId)) {
+            return (Set<Country>) cacheService.get(ALL_COUNTRIES_BY_NATION_ID + nationId);
         } else {
             Nation nation = nationRepository.findByIdWithCountriesWithCities(nationId)
                     .orElseThrow(() -> new IllegalStateException(
                             "nation, which id " + nationId + " does not exist, that's why you can't view countries from its"));
             Set<Country> countries = new HashSet<>(nation.getCountries());
-            cacheService.put(cacheKey, countries);
+            cacheService.put(ALL_COUNTRIES_BY_NATION_ID + nationId, countries);
             return countries;
         }
     }

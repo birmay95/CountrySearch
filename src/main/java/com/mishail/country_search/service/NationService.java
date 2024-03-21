@@ -1,6 +1,8 @@
 package com.mishail.country_search.service;
 
 import com.mishail.country_search.cache.CacheService;
+import com.mishail.country_search.exception.ObjectExistedException;
+import com.mishail.country_search.exception.ObjectNotFoundException;
 import com.mishail.country_search.model.Country;
 import com.mishail.country_search.model.Nation;
 import com.mishail.country_search.repository.CountryRepository;
@@ -21,17 +23,22 @@ public class NationService {
 
     private final CacheService cacheService;
 
-    private static final String ALL_NATIONS_BY_COUNTRY_ID = "allNationsByCountryId_";
-    private static final String ALL_COUNTRIES_BY_NATION_ID = "allCountriesByNationId_";
+    private static final String ALL_NATIONS_BY_COUNTRY_ID =
+            "allNationsByCountryId_";
+    private static final String ALL_COUNTRIES_BY_NATION_ID =
+            "allCountriesByNationId_";
     private static final String ALL_NATIONS = "allNations";
 
-    private void cleanCache(Long nationId, Nation nation) {
+    private void cleanCache(final Long nationId, final Nation nation) {
 
-        List<Country> countries = countryRepository.findCountriesWithNationsByNationByNationId(nationId);
+        List<Country> countries = countryRepository
+                .findCountriesWithNationsByNationByNationId(nationId);
 
         for (Country country : countries) {
-            if (cacheService.containsKey(ALL_NATIONS_BY_COUNTRY_ID + country.getId())) {
-                cacheService.remove(ALL_NATIONS_BY_COUNTRY_ID + country.getId());
+            if (cacheService.containsKey(
+                    ALL_NATIONS_BY_COUNTRY_ID + country.getId())) {
+                cacheService.remove(
+                        ALL_NATIONS_BY_COUNTRY_ID + country.getId());
             }
             if (cacheService.containsKey("countryId_" + country.getId())) {
                 cacheService.remove("countryId_" + country.getId());
@@ -42,7 +49,8 @@ public class NationService {
             cacheService.remove(ALL_NATIONS);
         }
 
-        if (cacheService.containsKey(ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
+        if (cacheService.containsKey(
+                ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
             cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
         }
 
@@ -51,14 +59,17 @@ public class NationService {
         }
     }
 
-    public Set<Nation> getNationsByCountryId(Long countryId) {
-
+    public Set<Nation> getNationsByCountryId(final Long countryId) {
         if (cacheService.containsKey(ALL_NATIONS_BY_COUNTRY_ID + countryId)) {
-            return (Set<Nation>) cacheService.get(ALL_NATIONS_BY_COUNTRY_ID + countryId);
+            return (Set<Nation>) cacheService
+                    .get(ALL_NATIONS_BY_COUNTRY_ID + countryId);
         } else {
-            Country country = countryRepository.findCountryWithNationsById(countryId)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "country, which id " + countryId + " does not exist, that's why you can't view nations from its"));
+            Country country = countryRepository
+                    .findCountryWithNationsById(countryId)
+                    .orElseThrow(() -> new ObjectNotFoundException(
+                            "country, which id " + countryId
+                                    + " does not exist, that's why "
+                                    + "you can't view nations from its"));
             Set<Nation> nations = country.getNations();
             cacheService.put(ALL_NATIONS_BY_COUNTRY_ID + countryId, nations);
             return nations;
@@ -75,29 +86,40 @@ public class NationService {
         }
     }
 
-    public Set<Country> getCountriesByNationId(Long nationId) {
+    public Set<Country> getCountriesByNationId(final Long nationId) {
 
         if (cacheService.containsKey(ALL_COUNTRIES_BY_NATION_ID + nationId)) {
-            return (Set<Country>) cacheService.get(ALL_COUNTRIES_BY_NATION_ID + nationId);
+            return (Set<Country>) cacheService
+                    .get(ALL_COUNTRIES_BY_NATION_ID + nationId);
         } else {
-            Nation nation = nationRepository.findByIdWithCountriesWithCities(nationId)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "nation, which id " + nationId + " does not exist, that's why you can't view countries from its"));
+            Nation nation = nationRepository
+                    .findByIdWithCountriesWithCities(nationId)
+                    .orElseThrow(() -> new ObjectNotFoundException(
+                            "nation, which id " + nationId
+                                    + " does not exist, that's why "
+                                    + "you can't view countries from its"));
             Set<Country> countries = new HashSet<>(nation.getCountries());
             cacheService.put(ALL_COUNTRIES_BY_NATION_ID + nationId, countries);
             return countries;
         }
     }
 
-    public void addNewNationByCountryId(Long countryId, Nation nationRequest) {
+    public Nation addNewNationByCountryId(final Long countryId,
+                                          final Nation nationRequest) {
 
-        Country country = countryRepository.findCountryWithNationsById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country, which id " + countryId + " does not exist, that's why you can't add nation to its"));
+        Country country = countryRepository
+                .findCountryWithNationsById(countryId)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country, which id " + countryId
+                                + " does not exist, that's why "
+                                + "you can't add nation to its"));
 
-        Nation nation = nationRepository.findNationByName(nationRequest.getName());
+        Nation nation = nationRepository
+                .findNationByName(nationRequest.getName());
 
-        if (country.getNations().stream().noneMatch(nationFunc -> nationFunc.getName().equals(nationRequest.getName()))) {
+        if (country.getNations().stream().noneMatch(
+                nationFunc -> nationFunc.getName()
+                        .equals(nationRequest.getName()))) {
             if (nation != null) {
                 country.getNations().add(nation);
                 countryRepository.save(country);
@@ -105,53 +127,71 @@ public class NationService {
                 nationRepository.save(nationRequest);
                 country.getNations().add(nationRequest);
                 countryRepository.save(country);
-                nation = nationRepository.findNationByName(nationRequest.getName());
+                nation = nationRepository
+                        .findNationByName(nationRequest.getName());
             }
         } else {
-            throw new IllegalStateException("nation with name " + nationRequest.getName() + " already exists in the country " + country.getName() + ".");
+            throw new ObjectExistedException(
+                    "nation with name " + nationRequest.getName()
+                            + " already exists in the country "
+                            + country.getName() + ".");
         }
 
         cleanCache(nation.getId(), nation);
+
+        return nation;
     }
 
     @Transactional
-    public void updateNation(Long nationId,
-                             String name,
-                             String language,
-                             String religion) {
+    public Nation updateNation(final Long nationId,
+                               final String name,
+                               final String language,
+                               final String religion) {
         Nation nation = nationRepository.findById(nationId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "nation with id " + nationId + " does not exist, that's why you can't update this"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "nation with id " + nationId
+                                + " does not exist, that's why "
+                                + "you can't update this"));
 
         cleanCache(nationId, nation);
 
-        if (name != null && !name.isEmpty() && !Objects.equals(nation.getName(), name)) {
-            Optional<Nation> nationOptional = Optional.ofNullable(nationRepository.findNationByName(name));
+        if (name != null && !name.isEmpty()
+                && !Objects.equals(nation.getName(), name)) {
+            Optional<Nation> nationOptional = Optional
+                    .ofNullable(nationRepository.findNationByName(name));
             if (nationOptional.isPresent()) {
-                throw new IllegalStateException("nation with this name exists");
+                throw new ObjectExistedException(
+                        "nation with this name exists");
             }
             nation.setName(name);
         }
 
-        if (language != null && !language.isEmpty() && !Objects.equals(nation.getLanguage(), language)) {
+        if (language != null && !language.isEmpty()
+                && !Objects.equals(nation.getLanguage(), language)) {
             nation.setLanguage(language);
         }
 
-        if (religion != null && !religion.isEmpty() && !Objects.equals(nation.getReligion(), religion)) {
+        if (religion != null && !religion.isEmpty()
+                && !Objects.equals(nation.getReligion(), religion)) {
             nation.setReligion(religion);
         }
+
+        return nation;
     }
 
     @Transactional
-    public void deleteNation(Long nationId) {
+    public void deleteNation(final Long nationId) {
 
         Nation nation = nationRepository.findByIdWithCountries(nationId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "nation, which id " + nationId + " does not exist, that's why you can't delete its"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "nation, which id " + nationId
+                                + " does not exist, that's why "
+                                + "you can't delete its"));
 
         cleanCache(nationId, nation);
 
-        List<Country> countries = countryRepository.findCountriesWithNationsByNationByNationId(nationId);
+        List<Country> countries = countryRepository
+                .findCountriesWithNationsByNationByNationId(nationId);
 
         for (Country country : countries) {
             country.getNations().remove(nation);
@@ -162,15 +202,21 @@ public class NationService {
     }
 
     @Transactional
-    public void deleteNationFromCountry(Long countryId, Long nationId) {
+    public void deleteNationFromCountry(final Long countryId,
+                                        final Long nationId) {
 
-        Country country = countryRepository.findCountryWithNationsById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country with id " + countryId + " doesn't exist, that's why you can't delete its"));
+        Country country = countryRepository
+                .findCountryWithNationsById(countryId)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country with id " + countryId
+                                + " doesn't exist, that's why "
+                                + "you can't delete its"));
 
         Nation nation = nationRepository.findById(nationId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "nation with id " + nationId + " does not exist, that's why you can't delete its"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "nation with id " + nationId
+                                + " does not exist, that's why "
+                                + "you can't delete its"));
 
         cleanCache(nationId, nation);
 

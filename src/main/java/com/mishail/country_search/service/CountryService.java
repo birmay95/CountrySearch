@@ -1,6 +1,8 @@
 package com.mishail.country_search.service;
 
 import com.mishail.country_search.cache.CacheService;
+import com.mishail.country_search.exception.ObjectExistedException;
+import com.mishail.country_search.exception.ObjectNotFoundException;
 import com.mishail.country_search.model.Country;
 import com.mishail.country_search.repository.CountryRepository;
 import jakarta.transaction.Transactional;
@@ -24,56 +26,64 @@ public class CountryService {
     private static final String ALL_COUNTRIES = "allCountries";
     private static final String COUNTRY_ID = "countryId_";
 
-
     public List<Country> getCountries() {
         if (cacheService.containsKey(ALL_COUNTRIES)) {
             return (List<Country>) cacheService.get(ALL_COUNTRIES);
         } else {
-            List<Country> countries = countryRepository.findAllWithCitiesAndNations();
+            List<Country> countries = countryRepository
+                    .findAllWithCitiesAndNations();
             cacheService.put(ALL_COUNTRIES, countries);
             return countries;
         }
     }
 
-    public Country getCountryById(Long countryId) {
+    public Country getCountryById(final Long countryId) {
         if (cacheService.containsKey(COUNTRY_ID + countryId)) {
             return (Country) cacheService.get(COUNTRY_ID + countryId);
         } else {
-            Country country = countryRepository.findCountryWithCitiesAndNationsById(countryId)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "country with id " + countryId + "does not exist"));
+            Country country = countryRepository
+                    .findCountryWithCitiesAndNationsById(countryId)
+                    .orElseThrow(() -> new ObjectNotFoundException(
+                            "country with id " + countryId
+                                    + " does not exist"));
             cacheService.put(COUNTRY_ID + countryId, country);
             return country;
         }
     }
 
-    public void addNewCountry(Country country) {
+    public Country addNewCountry(final Country country) {
         Optional<Country> countryOptional = countryRepository
                 .findCountryByName(country.getName());
         if (countryOptional.isPresent()) {
-            throw new IllegalStateException("country exists");
+            throw new ObjectExistedException("country exists");
         }
-        if (country.getNations() == null)
+        if (country.getNations() == null) {
             country.setNations(new HashSet<>());
-        if (country.getCities() == null)
+        }
+        if (country.getCities() == null) {
             country.setCities(new HashSet<>());
+        }
         countryRepository.save(country);
         if (cacheService.containsKey(ALL_COUNTRIES)) {
-            List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
+            List<Country> countries = (List<Country>) cacheService
+                    .get(ALL_COUNTRIES);
             countries.add(country);
             cacheService.put(ALL_COUNTRIES, countries);
         }
         cacheService.put(COUNTRY_ID + country.getId(), country);
+
+        return country;
     }
 
     @Transactional
-    public void deleteCountry(Long countryId) {
+    public void deleteCountry(final Long countryId) {
         Country country = countryRepository.findCountryWithCitiesById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId + " does not exist"));
         cacheService.remove(COUNTRY_ID + country.getId());
         if (cacheService.containsKey(ALL_COUNTRIES)) {
-            List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
+            List<Country> countries = (List<Country>) cacheService
+                    .get(ALL_COUNTRIES);
             countries.remove(country);
             cacheService.put(ALL_COUNTRIES, countries);
         }
@@ -91,28 +101,34 @@ public class CountryService {
     }
 
     @Transactional
-    public void updateCountry(Long countryId,
-                              String name,
-                              String capital,
-                              Double population,
-                              Double areaSquareKm,
-                              Double gdp) {
+    public Country updateCountry(final Long countryId,
+                                 final String name,
+                                 final String capital,
+                                 final Double population,
+                                 final Double areaSquareKm,
+                                 final Double gdp) {
         Country countryChanged = countryRepository.findById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country with id " + countryId + "can not be updated, because it does not exist"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country with id " + countryId
+                                + "can not be updated, "
+                                + "because it does not exist"));
 
         Country countryBeforeChanges = new Country();
         BeanUtils.copyProperties(countryChanged, countryBeforeChanges);
 
-        if (name != null && !name.isEmpty() && !Objects.equals(countryChanged.getName(), name)) {
-            Optional<Country> countryOptional = countryRepository.findCountryByName(name);
+        if (name != null && !name.isEmpty()
+                && !Objects.equals(countryChanged.getName(), name)) {
+            Optional<Country> countryOptional = countryRepository
+                    .findCountryByName(name);
             if (countryOptional.isPresent()) {
-                throw new IllegalStateException("country with this name exists");
+                throw new ObjectExistedException(
+                        "country with this name exists");
             }
             countryChanged.setName(name);
         }
 
-        if (capital != null && !capital.isEmpty() && !Objects.equals(countryChanged.getCapital(), capital)) {
+        if (capital != null && !capital.isEmpty()
+                && !Objects.equals(countryChanged.getCapital(), capital)) {
             countryChanged.setCapital(capital);
         }
 
@@ -129,11 +145,14 @@ public class CountryService {
         }
 
         if (cacheService.containsKey(ALL_COUNTRIES)) {
-            List<Country> countries = (List<Country>) cacheService.get(ALL_COUNTRIES);
+            List<Country> countries = (List<Country>) cacheService
+                    .get(ALL_COUNTRIES);
             countries.remove(countryBeforeChanges);
             countries.add(countryChanged);
             cacheService.put(ALL_COUNTRIES, countries);
         }
         cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
+
+        return countryChanged;
     }
 }

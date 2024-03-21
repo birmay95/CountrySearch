@@ -1,6 +1,8 @@
 package com.mishail.country_search.service;
 
 import com.mishail.country_search.cache.CacheService;
+import com.mishail.country_search.exception.ObjectExistedException;
+import com.mishail.country_search.exception.ObjectNotFoundException;
 import com.mishail.country_search.repository.CountryRepository;
 import com.mishail.country_search.model.City;
 import com.mishail.country_search.model.Country;
@@ -22,20 +24,25 @@ public class CityService {
 
     private final CacheService cacheService;
 
-    private static final String ALL_CITIES_BY_COUNTRY_ID = "allCitiesByCountryId_";
+    private static final String ALL_CITIES_BY_COUNTRY_ID =
+            "allCitiesByCountryId_";
     private static final String ALL_CITIES = "allCities";
 
-    private void updateCache(Country country) {
+    private void updateCache(final Country country) {
 
-        if (cacheService.containsKey(ALL_CITIES_BY_COUNTRY_ID + country.getId()))
-            cacheService.put(ALL_CITIES_BY_COUNTRY_ID + country.getId(), country.getCities());
+        if (cacheService.containsKey(ALL_CITIES_BY_COUNTRY_ID
+                + country.getId())) {
+            cacheService.put(ALL_CITIES_BY_COUNTRY_ID + country.getId(),
+                    country.getCities());
+        }
 
         if (cacheService.containsKey("allCountries")) {
             cacheService.remove("allCountries");
         }
 
-        if (cacheService.containsKey("countryId_" + country.getId()))
-            cacheService.put("countryId_" + country.getId(), country);
+        if (cacheService.containsKey("countryId_" + country.getId())) {
+            cacheService.remove("countryId_" + country.getId());
+        }
     }
 
     public List<City> getCities() {
@@ -48,14 +55,17 @@ public class CityService {
         }
     }
 
-    public Set<City> getCitiesByCountryId(Long countryId) {
-
+    public Set<City> getCitiesByCountryId(final Long countryId) {
         if (cacheService.containsKey(ALL_CITIES_BY_COUNTRY_ID + countryId)) {
-            return (Set<City>) cacheService.get(ALL_CITIES_BY_COUNTRY_ID + countryId);
+            return (Set<City>) cacheService
+                    .get(ALL_CITIES_BY_COUNTRY_ID + countryId);
         } else {
-            Country country = countryRepository.findCountryWithCitiesById(countryId)
-                    .orElseThrow(() -> new IllegalStateException(
-                            "country with id " + countryId + " does not exist, that's why you can't view cities from its"));
+            Country country = countryRepository
+                    .findCountryWithCitiesById(countryId)
+                    .orElseThrow(() -> new ObjectNotFoundException(
+                            "country with id " + countryId
+                                    + " does not exist, that's why "
+                                    + "you can't view cities from its"));
             Set<City> cities = country.getCities();
             cacheService.put(ALL_CITIES_BY_COUNTRY_ID + countryId, cities);
             return cities;
@@ -63,18 +73,25 @@ public class CityService {
     }
 
     @Transactional
-    public void addNewCityByCountryId(Long countryId, City cityRequest) {
+    public City addNewCityByCountryId(final Long countryId,
+                                      final City cityRequest) {
 
-        Country country = countryRepository.findCountryWithCitiesById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country, which id " + countryId + " does not exist, that's why you can't add new city"));
+        Country country = countryRepository
+                .findCountryWithCitiesAndNationsById(countryId)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country, which id " + countryId + " does not exist, "
+                                + "that's why you can't add new city"));
 
-        if (country.getCities().stream().noneMatch(city -> city.getName().equals(cityRequest.getName()))) {
+        if (country.getCities().stream().noneMatch(
+                city -> city.getName().equals(cityRequest.getName()))) {
             country.getCities().add(cityRequest);
             cityRepository.save(cityRequest);
             countryRepository.save(country);
         } else {
-            throw new IllegalStateException("city with name " + cityRequest.getName() + " already exists in the country " + country.getName() + ".");
+            throw new ObjectExistedException("city with name "
+                    + cityRequest.getName()
+                    + " already exists in the country "
+                    + country.getName() + ".");
         }
 
         if (cacheService.containsKey(ALL_CITIES)) {
@@ -84,13 +101,71 @@ public class CityService {
         }
 
         updateCache(country);
+
+        return cityRequest;
     }
 
     @Transactional
-    public void deleteCitiesByCountryId(Long countryId) {
+    public City updateCity(final Long cityId,
+                           final String name,
+                           final Double population,
+                           final Double areaSquareKm) {
+
+        City city = cityRepository.findById(cityId)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "city with id " + cityId + " does not exist"));
+
+        Country country = countryRepository
+                .findCountryWithCitiesByCityId(cityId)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country with city , which id "
+                                + cityId
+                                + " can not be updated, "
+                                + "because it does not exist"));
+
+        City cityBeforeChanges = new City();
+        BeanUtils.copyProperties(city, cityBeforeChanges);
+
+        Set<City> cities = country.getCities();
+
+        if (name != null && !name.isEmpty()
+                && !Objects.equals(city.getName(), name)) {
+            for (City cityTemp : cities) {
+                if (Objects.equals(cityTemp.getName(), name)) {
+                    throw new ObjectExistedException(
+                            "In this country city with this name exists");
+                }
+            }
+            city.setName(name);
+        }
+
+        if (population != null && population > 0) {
+            city.setPopulation(population);
+        }
+
+        if (areaSquareKm != null && areaSquareKm > 0) {
+            city.setAreaSquareKm(areaSquareKm);
+        }
+
+        if (cacheService.containsKey(ALL_CITIES)) {
+            List<City> allCities = (List<City>) cacheService.get(ALL_CITIES);
+            allCities.remove(cityBeforeChanges);
+            allCities.add(city);
+            cacheService.put(ALL_CITIES, allCities);
+        }
+
+        updateCache(country);
+
+        return city;
+    }
+
+    @Transactional
+    public void deleteCitiesByCountryId(final Long countryId) {
         Country country = countryRepository.findCountryWithCitiesById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country, which id " + countryId + " does not exist, that's why you can't delete cities from its"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country, which id " + countryId
+                                + " does not exist, that's why "
+                                + "you can't delete cities from its"));
 
         Set<City> citiesBeforeChanges = new HashSet<>(country.getCities());
         Set<City> cities = country.getCities();
@@ -114,14 +189,19 @@ public class CityService {
     }
 
     @Transactional
-    public void deleteCityByIdFromCountryByCountryId(Long countryId, Long cityId) {
+    public void deleteCityByIdFromCountryByCountryId(final Long countryId,
+                                                     final Long cityId) {
         Country country = countryRepository.findCountryWithCitiesById(countryId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country with id " + countryId + " does not exist, that's why you can't delete city from its"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country with id " + countryId
+                                + " does not exist, that's why "
+                                + "you can't delete city from its"));
 
         City city = cityRepository.findById(cityId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "city with id " + countryId + " does not exist, that's why you can't delete its"));
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "city with id " + countryId
+                                + " does not exist, that's why "
+                                + "you can't delete its"));
 
         cityRepository.deleteById(city.getId());
 
@@ -131,53 +211,6 @@ public class CityService {
         if (cacheService.containsKey(ALL_CITIES)) {
             List<City> allCities = (List<City>) cacheService.get(ALL_CITIES);
             allCities.remove(city);
-            cacheService.put(ALL_CITIES, allCities);
-        }
-
-        updateCache(country);
-    }
-
-    @Transactional
-    public void updateCity(Long cityId,
-                           String name,
-                           Double population,
-                           Double areaSquareKm) {
-
-        City city = cityRepository.findById(cityId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "city with id " + cityId + " does not exist"));
-
-        Country country = countryRepository.findCountryWithCitiesByCityId(cityId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "country with city , which id " + cityId + " can not be updated, because it does not exist"));
-
-        City cityBeforeChanges = new City();
-        BeanUtils.copyProperties(city, cityBeforeChanges);
-
-        Set<City> cities = country.getCities();
-
-        if (name != null && !name.isEmpty() && !Objects.equals(city.getName(), name)) {
-            for (City cityTemp : cities) {
-                if (Objects.equals(cityTemp.getName(), name)) {
-                    throw new IllegalStateException(
-                            "In this country city with this name exists");
-                }
-            }
-            city.setName(name);
-        }
-
-        if (population != null && population > 0) {
-            city.setPopulation(population);
-        }
-
-        if (areaSquareKm != null && areaSquareKm > 0) {
-            city.setAreaSquareKm(areaSquareKm);
-        }
-
-        if (cacheService.containsKey(ALL_CITIES)) {
-            List<City> allCities = (List<City>) cacheService.get(ALL_CITIES);
-            allCities.remove(cityBeforeChanges);
-            allCities.add(city);
             cacheService.put(ALL_CITIES, allCities);
         }
 

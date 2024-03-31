@@ -111,7 +111,7 @@ public class NationService {
                 .findCountryWithNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId
-                                + " doesn't exist, that's why "
+                                + " doesn't exist, that is why "
                                 + "you can't add nation to its"));
 
         Nation nation = nationRepository

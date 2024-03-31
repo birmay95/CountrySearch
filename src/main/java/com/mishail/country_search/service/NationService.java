@@ -142,6 +142,17 @@ public class NationService {
         return nation;
     }
 
+    public List<Nation> addNewNationsByCountryId(final Long countryId,
+                                          final List<Nation> nationsRequest) {
+        List<Nation> addedNations = new ArrayList<>();
+
+        nationsRequest.forEach(nation -> {
+            addNewNationByCountryId(countryId, nation);
+        });
+
+        return addedNations;
+    }
+
     @Transactional
     public Nation updateNation(final Long nationId,
                                final String name,

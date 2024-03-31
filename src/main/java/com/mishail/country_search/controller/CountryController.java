@@ -56,6 +56,16 @@ public class CountryController {
                 .addNewCountry(country), HttpStatus.CREATED);
     }
 
+    @PostMapping("/countries")
+    @Operation(method = "POST",
+            summary = "Add countries",
+            description = "Add new list of countries at existed countries")
+    public ResponseEntity<List<Country>> addNewCountries(
+            @RequestBody final List<Country> countries) {
+        return new ResponseEntity<>(countryService
+                .addNewCountries(countries), HttpStatus.CREATED);
+    }
+
     @PutMapping(path = "{id}")
     @Operation(method = "PUT",
             summary = "Update country",

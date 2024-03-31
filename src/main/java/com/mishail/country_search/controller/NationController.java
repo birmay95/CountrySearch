@@ -18,7 +18,8 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Nations",
-        description = "You can view, add, update and delete information about nations")
+        description = "You can view, add, "
+                + "update and delete information about nations")
 public class NationController {
 
     private final NationService nationService;
@@ -67,7 +68,7 @@ public class NationController {
         return new ResponseEntity<>(countries, HttpStatus.OK);
     }
 
-    @PostMapping("countries/{countryId}/nations")
+    @PostMapping("countries/{countryId}/nation")
     @Operation(method = "POST",
             summary = "Add nation",
             description = "Add new nation at country by its id")
@@ -78,6 +79,20 @@ public class NationController {
             @RequestBody final Nation nation) {
         return new ResponseEntity<>(nationService
                 .addNewNationByCountryId(countryId, nation),
+                HttpStatus.CREATED);
+    }
+
+    @PostMapping("countries/{countryId}/nations")
+    @Operation(method = "POST",
+            summary = "Add nations",
+            description = "Add new list of nations at country by its id")
+    public ResponseEntity<List<Nation>> addNewNationsByCountryId(
+            @PathVariable(value = "countryId")
+            @Parameter(description = "Id of the country, "
+                    + "in which you want to add nations") final Long countryId,
+            @RequestBody final List<Nation> nations) {
+        return new ResponseEntity<>(nationService
+                .addNewNationsByCountryId(countryId, nations),
                 HttpStatus.CREATED);
     }
 

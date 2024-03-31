@@ -77,7 +77,7 @@ public class CityService {
                                       final City cityRequest) {
 
         Country country = countryRepository
-                .findCountryWithCitiesAndNationsById(countryId)
+                .findCountryWithCitiesById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId + " does not exist, "
                                 + "that's why you can't add new city"));
@@ -103,6 +103,18 @@ public class CityService {
         updateCache(country);
 
         return cityRequest;
+    }
+
+    @Transactional
+    public List<City> addNewCitiesByCountryId(final Long countryId,
+                                      final List<City> citiesRequest) {
+
+        List<City> addedCities = new ArrayList<>();
+
+        citiesRequest.forEach(city -> addedCities
+                .add(addNewCityByCountryId(countryId, city)));
+
+        return addedCities;
     }
 
     @Transactional

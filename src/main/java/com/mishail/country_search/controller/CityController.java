@@ -50,7 +50,7 @@ public class CityController {
         return new ResponseEntity<>(cities, HttpStatus.OK);
     }
 
-    @PostMapping(path = "countries/{countryId}/cities")
+    @PostMapping(path = "countries/{countryId}/city")
     @Operation(method = "POST",
             summary = "Add city in country",
             description = "Add new city in country by its id")
@@ -61,6 +61,20 @@ public class CityController {
             @RequestBody final City city) {
         return new ResponseEntity<>(cityService
                 .addNewCityByCountryId(countryId, city),
+                HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "countries/{countryId}/cities")
+    @Operation(method = "POST",
+            summary = "Add cities in country",
+            description = "Add new list of cities in country by its id")
+    public ResponseEntity<List<City>> addNewCitiesByCountryId(
+            @PathVariable(value = "countryId")
+            @Parameter(description = "Id of the country, "
+                    + "in which you want to add cities") final Long countryId,
+            @RequestBody final List<City> cities) {
+        return new ResponseEntity<>(cityService
+                .addNewCitiesByCountryId(countryId, cities),
                 HttpStatus.CREATED);
     }
 
@@ -91,7 +105,8 @@ public class CityController {
     public ResponseEntity<HttpStatus> deleteCitiesByCountryId(
             @PathVariable(value = "countryId")
             @Parameter(description = "Id of the country,"
-                    + " in which you want to delete all cities") final Long countryId) {
+                    + " in which you want to delete all cities")
+            final Long countryId) {
         cityService.deleteCitiesByCountryId(countryId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

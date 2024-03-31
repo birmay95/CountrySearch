@@ -10,10 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -75,29 +72,14 @@ public class CountryService {
         return country;
     }
 
-    @Transactional
-    public void deleteCountry(final Long countryId) {
-        Country country = countryRepository.findCountryWithCitiesById(countryId)
-                .orElseThrow(() -> new ObjectNotFoundException(
-                        "country, which id " + countryId + " does not exist"));
-        cacheService.remove(COUNTRY_ID + country.getId());
-        if (cacheService.containsKey(ALL_COUNTRIES)) {
-            List<Country> countries = (List<Country>) cacheService
-                    .get(ALL_COUNTRIES);
-            countries.remove(country);
-            cacheService.put(ALL_COUNTRIES, countries);
-        }
-        country.getCities().clear();
-        countryRepository.deleteById(countryId);
-    }
+    public List<Country> addNewCountries(final List<Country> countries) {
 
-    public void deleteCountries() {
-        List<Country> countries = countryRepository.findAllWithCities();
-        for (Country country : countries) {
-            country.getCities().clear();
-        }
-        countryRepository.deleteAll();
-        cacheService.clear();
+        List<Country> addedCountries = new ArrayList<>();
+
+        countries.forEach(country -> addedCountries
+                .add(addNewCountry(country)));
+
+        return addedCountries;
     }
 
     @Transactional
@@ -154,5 +136,30 @@ public class CountryService {
         cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
 
         return countryChanged;
+    }
+
+    @Transactional
+    public void deleteCountry(final Long countryId) {
+        Country country = countryRepository.findCountryWithCitiesById(countryId)
+                .orElseThrow(() -> new ObjectNotFoundException(
+                        "country, which id " + countryId + " does not exist"));
+        cacheService.remove(COUNTRY_ID + country.getId());
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            List<Country> countries = (List<Country>) cacheService
+                    .get(ALL_COUNTRIES);
+            countries.remove(country);
+            cacheService.put(ALL_COUNTRIES, countries);
+        }
+        country.getCities().clear();
+        countryRepository.deleteById(countryId);
+    }
+
+    public void deleteCountries() {
+        List<Country> countries = countryRepository.findAllWithCities();
+        for (Country country : countries) {
+            country.getCities().clear();
+        }
+        countryRepository.deleteAll();
+        cacheService.clear();
     }
 }

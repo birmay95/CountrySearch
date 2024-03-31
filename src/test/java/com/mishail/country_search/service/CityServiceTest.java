@@ -38,27 +38,27 @@ class CityServiceTest {
     private CityService cityService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void getCitiesWhenNotCached() {
+    void getCitiesWhenNotCached() {
         List<City> cities = new ArrayList<>();
-        when(cacheService.containsKey(eq("allCities"))).thenReturn(false);
+        when(cacheService.containsKey("allCities")).thenReturn(false);
         when(cityRepository.findAll()).thenReturn(cities);
 
         List<City> result = cityService.getCities();
 
         assertEquals(cities, result);
-        verify(cacheService).put(eq("allCities"), eq(cities));
+        verify(cacheService).put("allCities", cities);
     }
 
     @Test
-    public void getCitiesWhenCached() {
+    void getCitiesWhenCached() {
         List<City> cities = new ArrayList<>();
-        when(cacheService.containsKey(eq("allCities"))).thenReturn(true);
-        when(cacheService.get(eq("allCities"))).thenReturn(cities);
+        when(cacheService.containsKey("allCities")).thenReturn(true);
+        when(cacheService.get("allCities")).thenReturn(cities);
 
         List<City> result = cityService.getCities();
 
@@ -67,26 +67,26 @@ class CityServiceTest {
     }
 
     @Test
-    public void getCitiesByCountryByIdWhenNotCached() {
+    void getCitiesByCountryByIdWhenNotCached() {
         Long countryId = 1L;
         Set<City> cities = new HashSet<>();
         Country country = new Country();
         country.setId(countryId);
         country.setCities(cities);
-        when(cacheService.containsKey(eq("allCitiesByCountryId_" + countryId))).thenReturn(false);
+        when(cacheService.containsKey("allCitiesByCountryId_" + countryId)).thenReturn(false);
         when(countryRepository.findCountryWithCitiesById(countryId))
                 .thenReturn(Optional.of(country));
 
         Set<City> result = cityService.getCitiesByCountryId(countryId);
 
         assertEquals(cities, result);
-        verify(cacheService).put(eq("allCitiesByCountryId_" + countryId), eq(cities));
+        verify(cacheService).put("allCitiesByCountryId_" + countryId, cities);
     }
 
     @Test
-    public void getCitiesByCountryByIdWhenNotCachedAndNotExist() {
+    void getCitiesByCountryByIdWhenNotCachedAndNotExist() {
         Long countryId = 1L;
-        when(cacheService.containsKey(eq("allCitiesByCountryId_" + countryId))).thenReturn(false);
+        when(cacheService.containsKey("allCitiesByCountryId_" + countryId)).thenReturn(false);
         when(countryRepository.findCountryWithCitiesById(countryId))
                 .thenReturn(Optional.empty());
 
@@ -94,16 +94,16 @@ class CityServiceTest {
 
         verify(countryRepository, times(1)).findCountryWithCitiesById(countryId);
         verifyNoMoreInteractions(countryRepository);
-        verify(cacheService, times(1)).containsKey(eq("allCitiesByCountryId_" + countryId));
+        verify(cacheService, times(1)).containsKey("allCitiesByCountryId_" + countryId);
         verifyNoMoreInteractions(cacheService);
     }
 
     @Test
-    public void getCitiesByCountryByIdWhenCached() {
+    void getCitiesByCountryByIdWhenCached() {
         Long countryId = 1L;
         Set<City> cities = new HashSet<>();
-        when(cacheService.containsKey(eq("allCitiesByCountryId_" + countryId))).thenReturn(true);
-        when(cacheService.get(eq("allCitiesByCountryId_" + countryId))).thenReturn(cities);
+        when(cacheService.containsKey("allCitiesByCountryId_" + countryId)).thenReturn(true);
+        when(cacheService.get("allCitiesByCountryId_" + countryId)).thenReturn(cities);
 
         Set<City> result = cityService.getCitiesByCountryId(countryId);
 
@@ -129,8 +129,8 @@ class CityServiceTest {
 
         assertEquals(cityRequest, result);
         assertTrue(country.getCities().contains(cityRequest));
-        verify(cityRepository).save(eq(cityRequest));
-        verify(countryRepository).save(eq(country));
+        verify(cityRepository).save(cityRequest);
+        verify(countryRepository).save(country);
     }
 
     @Test
@@ -150,7 +150,7 @@ class CityServiceTest {
         assertThrows(ObjectExistedException.class, () -> cityService.addNewCityByCountryId(countryId, cityRequest));
         verifyNoInteractions(cityRepository);
         verifyNoInteractions(cacheService);
-        verify(countryRepository, times(1)).findCountryWithCitiesById(eq(countryId));
+        verify(countryRepository, times(1)).findCountryWithCitiesById(countryId);
         verifyNoMoreInteractions(countryRepository);
     }
 
@@ -165,12 +165,12 @@ class CityServiceTest {
         assertThrows(ObjectNotFoundException.class, () -> cityService.addNewCityByCountryId(countryId, cityRequest));
         verifyNoMoreInteractions(cityRepository);
         verifyNoInteractions(cacheService);
-        verify(countryRepository, times(1)).findCountryWithCitiesById(eq(countryId));
+        verify(countryRepository, times(1)).findCountryWithCitiesById(countryId);
         verifyNoMoreInteractions(countryRepository);
     }
 
     @Test
-    public void updateCity() {
+    void updateCity() {
         Long cityId = 1L;
         String name = "Grodno";
         Double population = 1000000.0;
@@ -205,7 +205,7 @@ class CityServiceTest {
     }
 
     @Test
-    public void updateCityWhenDoesNotExist() {
+    void updateCityWhenDoesNotExist() {
         Long cityId = 1L;
         String name = "Minsk";
         Double population = 1000000.0;
@@ -216,12 +216,12 @@ class CityServiceTest {
         assertThrows(ObjectNotFoundException.class, () -> cityService.updateCity(cityId, name, population, areaSquareKm));
         verifyNoInteractions(countryRepository);
         verifyNoInteractions(cacheService);
-        verify(cityRepository, times(1)).findById(eq(cityId));
+        verify(cityRepository, times(1)).findById(cityId);
         verifyNoMoreInteractions(cityRepository);
     }
 
     @Test
-    public void updateCityWhenCityExistsInCountry() {
+    void updateCityWhenCityExistsInCountry() {
         Long cityId = 1L;
         String name = "Grodno";
         Double population = 1000000.0;
@@ -247,14 +247,14 @@ class CityServiceTest {
 
         assertThrows(ObjectExistedException.class, () -> cityService.updateCity(cityId, "Minsk", population, areaSquareKm));
         verifyNoInteractions(cacheService);
-        verify(cityRepository, times(1)).findById(eq(cityId));
+        verify(cityRepository, times(1)).findById(cityId);
         verifyNoMoreInteractions(cityRepository);
-        verify(countryRepository, times(1)).findCountryWithCitiesByCityId(eq(cityId));
+        verify(countryRepository, times(1)).findCountryWithCitiesByCityId(cityId);
         verifyNoMoreInteractions(countryRepository);
     }
 
     @Test
-    public void deleteCityByIdFromCountryByCountryId() {
+    void deleteCityByIdFromCountryByCountryId() {
         Long countryId = 1L;
         Long cityId = 1L;
 
@@ -275,13 +275,13 @@ class CityServiceTest {
 
         cityService.deleteCityByIdFromCountryByCountryId(countryId, cityId);
 
-        verify(cityRepository).deleteById(eq(cityId));
-        verify(countryRepository).save(eq(country));
+        verify(cityRepository).deleteById(cityId);
+        verify(countryRepository).save(country);
         assertFalse(country.getCities().contains(city));
     }
 
     @Test
-    public void deleteCityByIdFromCountryByCountryIdWhenCountryDoesNotExist() {
+    void deleteCityByIdFromCountryByCountryIdWhenCountryDoesNotExist() {
         Long countryId = 1L;
         Long cityId = 1L;
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.empty());
@@ -295,7 +295,7 @@ class CityServiceTest {
 
 
     @Test
-    public void deleteCityByIdFromCountryByCountryIdWhenCityDoesNotExist() {
+    void deleteCityByIdFromCountryByCountryIdWhenCityDoesNotExist() {
         Long countryId = 1L;
         Long cityId = 1L;
         Country country = new Country();
@@ -307,14 +307,14 @@ class CityServiceTest {
 
         assertThrows(ObjectNotFoundException.class, () -> cityService.deleteCityByIdFromCountryByCountryId(countryId, cityId));
         verifyNoInteractions(cacheService);
-        verify(countryRepository, times(1)).findCountryWithCitiesById(eq(countryId));
+        verify(countryRepository, times(1)).findCountryWithCitiesById(countryId);
         verifyNoMoreInteractions(countryRepository);
-        verify(cityRepository, times(1)).findById(eq(cityId));
+        verify(cityRepository, times(1)).findById(cityId);
         verifyNoMoreInteractions(cityRepository);
     }
 
     @Test
-    public void deleteCitiesByCountryId() {
+    void deleteCitiesByCountryId() {
         Long countryId = 1L;
         Set<City> cities = new HashSet<>();
         City city1 = new City();
@@ -334,21 +334,21 @@ class CityServiceTest {
 
         cityService.deleteCitiesByCountryId(countryId);
 
-        verify(cityRepository).deleteById(eq(city1.getId()));
-        verify(cityRepository).deleteById(eq(city2.getId()));
-        verify(countryRepository).save(eq(country));
+        verify(cityRepository).deleteById(city1.getId());
+        verify(cityRepository).deleteById(city2.getId());
+        verify(countryRepository).save(country);
         assertTrue(country.getCities().isEmpty());
     }
 
     @Test
-    public void testDeleteCitiesByCountryIdWhenCountryDoesNotExist() {
+    void testDeleteCitiesByCountryIdWhenCountryDoesNotExist() {
         Long countryId = 1L;
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.empty());
 
         assertThrows(ObjectNotFoundException.class, () -> cityService.deleteCitiesByCountryId(countryId));
         verifyNoInteractions(cityRepository);
         verifyNoInteractions(cacheService);
-        verify(countryRepository, times(1)).findCountryWithCitiesById(eq(countryId));
+        verify(countryRepository, times(1)).findCountryWithCitiesById(countryId);
         verifyNoMoreInteractions(countryRepository);
     }
 }

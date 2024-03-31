@@ -19,7 +19,6 @@ import org.springframework.beans.BeanUtils;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,27 +37,27 @@ class NationServiceTest {
     private NationService nationService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void getNationsWhenNotCached() {
+    void getNationsWhenNotCached() {
         List<Nation> nations = new ArrayList<>();
-        when(cacheService.containsKey(eq("allNations"))).thenReturn(false);
+        when(cacheService.containsKey("allNations")).thenReturn(false);
         when(nationRepository.findAll()).thenReturn(nations);
 
         List<Nation> result = nationService.getNations();
 
         assertEquals(nations, result);
-        verify(cacheService).put(eq("allNations"), eq(nations));
+        verify(cacheService).put("allNations", nations);
     }
 
     @Test
-    public void getNationsWhenCached() {
+    void getNationsWhenCached() {
         List<Nation> nations = new ArrayList<>();
-        when(cacheService.containsKey(eq("allNations"))).thenReturn(true);
-        when(cacheService.get(eq("allNations"))).thenReturn(nations);
+        when(cacheService.containsKey("allNations")).thenReturn(true);
+        when(cacheService.get("allNations")).thenReturn(nations);
 
         List<Nation> result = nationService.getNations();
 
@@ -67,26 +66,26 @@ class NationServiceTest {
     }
 
     @Test
-    public void getNationsByCountryByIdWhenNotCached() {
+    void getNationsByCountryByIdWhenNotCached() {
         Long countryId = 1L;
         Set<Nation> nations = new HashSet<>();
         Country country = new Country();
         country.setId(countryId);
         country.setNations(nations);
-        when(cacheService.containsKey(eq("allNationsByCountryId_" + countryId))).thenReturn(false);
+        when(cacheService.containsKey("allNationsByCountryId_" + countryId)).thenReturn(false);
         when(countryRepository.findCountryWithNationsById(countryId))
                 .thenReturn(Optional.of(country));
 
         Set<Nation> result = nationService.getNationsByCountryId(countryId);
 
         assertEquals(nations, result);
-        verify(cacheService).put(eq("allNationsByCountryId_" + countryId), eq(nations));
+        verify(cacheService).put("allNationsByCountryId_" + countryId, nations);
     }
 
     @Test
-    public void getNationsByCountryByIdWhenNotCachedAndNotExist() {
+    void getNationsByCountryByIdWhenNotCachedAndNotExist() {
         Long countryId = 1L;
-        when(cacheService.containsKey(eq("allNationsByCountryId_" + countryId))).thenReturn(false);
+        when(cacheService.containsKey("allNationsByCountryId_" + countryId)).thenReturn(false);
         when(countryRepository.findCountryWithNationsById(countryId))
                 .thenReturn(Optional.empty());
 
@@ -94,16 +93,16 @@ class NationServiceTest {
 
         verify(countryRepository, times(1)).findCountryWithNationsById(countryId);
         verifyNoMoreInteractions(countryRepository);
-        verify(cacheService, times(1)).containsKey(eq("allNationsByCountryId_" + countryId));
+        verify(cacheService, times(1)).containsKey("allNationsByCountryId_" + countryId);
         verifyNoMoreInteractions(cacheService);
     }
 
     @Test
-    public void getNationsByCountryByIdWhenCached() {
+    void getNationsByCountryByIdWhenCached() {
         Long countryId = 1L;
         Set<Nation> nations = new HashSet<>();
-        when(cacheService.containsKey(eq("allNationsByCountryId_" + countryId))).thenReturn(true);
-        when(cacheService.get(eq("allNationsByCountryId_" + countryId))).thenReturn(nations);
+        when(cacheService.containsKey("allNationsByCountryId_" + countryId)).thenReturn(true);
+        when(cacheService.get("allNationsByCountryId_" + countryId)).thenReturn(nations);
 
         Set<Nation> result = nationService.getNationsByCountryId(countryId);
 
@@ -112,43 +111,43 @@ class NationServiceTest {
     }
 
     @Test
-    public void getCountriesByNationByIdWhenNotCached() {
+    void getCountriesByNationByIdWhenNotCached() {
         Long nationId = 1L;
         Set<Country> countries = new HashSet<>();
         Nation nation = new Nation();
         nation.setId(nationId);
         nation.setCountries(new ArrayList<>(countries));
-        when(cacheService.containsKey(eq("allCountriesByNationId_" + nationId))).thenReturn(false);
+        when(cacheService.containsKey("allCountriesByNationId_" + nationId)).thenReturn(false);
         when(nationRepository.findByIdWithCountriesWithCities(nationId))
                 .thenReturn(Optional.of(nation));
 
         Set<Country> result = nationService.getCountriesByNationId(nationId);
 
         assertEquals(countries, result);
-        verify(cacheService).put(eq("allCountriesByNationId_" + nationId), eq(countries));
+        verify(cacheService).put("allCountriesByNationId_" + nationId, countries);
     }
 
     @Test
-    public void getCountriesByNationByIdWhenNotCachedAndNotExist() {
+    void getCountriesByNationByIdWhenNotCachedAndNotExist() {
         Long nationId = 1L;
-        when(cacheService.containsKey(eq("allCountriesByNationId_" + nationId))).thenReturn(false);
+        when(cacheService.containsKey("allCountriesByNationId_" + nationId)).thenReturn(false);
         when(nationRepository.findByIdWithCountriesWithCities(nationId))
                 .thenReturn(Optional.empty());
 
         assertThrows(ObjectNotFoundException.class, () -> nationService.getCountriesByNationId(nationId));
 
-        verify(cacheService, times(1)).containsKey(eq("allCountriesByNationId_" + nationId));
+        verify(cacheService, times(1)).containsKey("allCountriesByNationId_" + nationId);
         verifyNoMoreInteractions(cacheService);
-        verify(nationRepository, times(1)).findByIdWithCountriesWithCities(eq(nationId));
+        verify(nationRepository, times(1)).findByIdWithCountriesWithCities(nationId);
         verifyNoMoreInteractions(nationRepository);
     }
 
     @Test
-    public void getCountriesByNationByIdWhenCached() {
+    void getCountriesByNationByIdWhenCached() {
         Long nationId = 1L;
         Set<Country> countries = new HashSet<>();
-        when(cacheService.containsKey(eq("allCountriesByNationId_" + nationId))).thenReturn(true);
-        when(cacheService.get(eq("allCountriesByNationId_" + nationId))).thenReturn(countries);
+        when(cacheService.containsKey("allCountriesByNationId_" + nationId)).thenReturn(true);
+        when(cacheService.get("allCountriesByNationId_" + nationId)).thenReturn(countries);
 
         Set<Country> result = nationService.getCountriesByNationId(nationId);
 
@@ -157,7 +156,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void addNationByCountryById() {
+    void addNationByCountryById() {
         Long countryId = 1L;
         String nationName = "Russian";
 
@@ -185,7 +184,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void addNewNationByCountryByIdExistingNation() {
+    void addNewNationByCountryByIdExistingNation() {
         Long countryId = 1L;
         String nationName = "Russian";
 
@@ -205,14 +204,14 @@ class NationServiceTest {
         when(nationRepository.findNationByName(nationName)).thenReturn(null);
 
         assertThrows(ObjectExistedException.class, () -> nationService.addNewNationByCountryId(countryId, nationRequest));
-        verify(countryRepository, times(1)).findCountryWithNationsById(eq(countryId));
+        verify(countryRepository, times(1)).findCountryWithNationsById(countryId);
         verifyNoMoreInteractions(countryRepository);
-        verify(nationRepository, times(1)).findNationByName(eq(nationName));
+        verify(nationRepository, times(1)).findNationByName(nationName);
         verifyNoMoreInteractions(nationRepository);
     }
 
     @Test
-    public void addNewNationByCountryByIdNonexistentCountry() {
+    void addNewNationByCountryByIdNonexistentCountry() {
         Long countryId = 1L;
         Nation nationRequest = new Nation();
         when(countryRepository.findCountryWithNationsById(countryId)).thenReturn(Optional.empty());
@@ -220,12 +219,12 @@ class NationServiceTest {
         assertThrows(ObjectNotFoundException.class, () -> nationService.addNewNationByCountryId(countryId, nationRequest));
         verifyNoInteractions(nationRepository);
         verifyNoInteractions(cacheService);
-        verify(countryRepository, times(1)).findCountryWithNationsById(eq(countryId));
+        verify(countryRepository, times(1)).findCountryWithNationsById(countryId);
         verifyNoMoreInteractions(countryRepository);
     }
 
     @Test
-    public void updateNation() {
+    void updateNation() {
         Long nationId = 1L;
         String name = "Russian";
         String language = "Russian";
@@ -253,7 +252,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void updateNationWithNameAlreadyExists() {
+    void updateNationWithNameAlreadyExists() {
         Long nationId = 1L;
         String name = "Russian";
         String language = "Russian";
@@ -271,7 +270,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void updateNationWhenDoesNotExist() {
+    void updateNationWhenDoesNotExist() {
         Long nationId = 1L;
         String name = "Russian";
         String language = "Russian";
@@ -286,7 +285,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void deleteNation() {
+    void deleteNation() {
         Long nationId = 1L;
         Nation nation = new Nation();
         nation.setId(nationId);
@@ -317,7 +316,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void deleteNationWhenNotExists() {
+    void deleteNationWhenNotExists() {
         Long nationId = 1L;
         when(nationRepository.findByIdWithCountries(nationId)).thenReturn(Optional.empty());
 
@@ -329,7 +328,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void deleteNationFromCountry() {
+    void deleteNationFromCountry() {
         Long countryId = 1L;
         Long nationId = 2L;
         Set<Nation> nations = new HashSet<>();
@@ -352,7 +351,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void deleteNationFromCountryWhenCountryNotExists() {
+    void deleteNationFromCountryWhenCountryNotExists() {
         Long countryId = 1L;
         Long nationId = 2L;
 
@@ -366,7 +365,7 @@ class NationServiceTest {
     }
 
     @Test
-    public void deleteNationFromCountryWhenNationNotExists() {
+    void deleteNationFromCountryWhenNationNotExists() {
         Long countryId = 1L;
         Long nationId = 2L;
 

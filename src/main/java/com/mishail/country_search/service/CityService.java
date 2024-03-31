@@ -64,7 +64,7 @@ public class CityService {
                     .findCountryWithCitiesById(countryId)
                     .orElseThrow(() -> new ObjectNotFoundException(
                             "country with id " + countryId
-                                    + " does not exist, that's why "
+                                    + " doesn't exist, that's why "
                                     + "you can't view cities from its"));
             Set<City> cities = country.getCities();
             cacheService.put(ALL_CITIES_BY_COUNTRY_ID + countryId, cities);
@@ -206,7 +206,7 @@ public class CityService {
         Country country = countryRepository.findCountryWithCitiesById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country with id " + countryId
-                                + " does not exist, that's why "
+                                + " doesn't exist, that's why "
                                 + "you can't delete city from its"));
 
         City city = cityRepository.findById(cityId)

@@ -36,27 +36,27 @@ class CountryServiceTest {
     private CountryService countryService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void getCountriesWhenNotCached() {
+    void getCountriesWhenNotCached() {
         List<Country> countries = new ArrayList<>();
-        when(cacheService.containsKey(eq("allCountries"))).thenReturn(false);
+        when(cacheService.containsKey("allCountries")).thenReturn(false);
         when(countryRepository.findAllWithCitiesAndNations()).thenReturn(countries);
 
         List<Country> result = countryService.getCountries();
 
         assertEquals(countries, result);
-        verify(cacheService).put(eq("allCountries"), eq(countries));
+        verify(cacheService).put("allCountries", countries);
     }
 
     @Test
-    public void getCountriesWhenCached() {
+    void getCountriesWhenCached() {
         List<Country> countries = new ArrayList<>();
-        when(cacheService.containsKey(eq("allCountries"))).thenReturn(true);
-        when(cacheService.get(eq("allCountries"))).thenReturn(countries);
+        when(cacheService.containsKey("allCountries")).thenReturn(true);
+        when(cacheService.get("allCountries")).thenReturn(countries);
 
         List<Country> result = countryService.getCountries();
 
@@ -65,23 +65,23 @@ class CountryServiceTest {
     }
 
     @Test
-    public void getCountryByIdWhenNotCached() {
+    void getCountryByIdWhenNotCached() {
         Long countryId = 1L;
         Country country = new Country();
         country.setId(countryId);
-        when(cacheService.containsKey(eq("countryId_" + countryId))).thenReturn(false);
+        when(cacheService.containsKey("countryId_" + countryId)).thenReturn(false);
         when(countryRepository.findCountryWithCitiesAndNationsById(countryId))
                 .thenReturn(Optional.of(country));
 
         Country result = countryService.getCountryById(countryId);
 
         assertEquals(country, result);
-        verify(cacheService).put(eq("countryId_" + countryId), eq(country));
+        verify(cacheService).put("countryId_" + countryId, country);
     }
     @Test
-    public void getCountryByIdWhenNotCachedAndNotExist() {
+    void getCountryByIdWhenNotCachedAndNotExist() {
         Long countryId = 1L;
-        when(cacheService.containsKey(eq("countryId_" + countryId))).thenReturn(false);
+        when(cacheService.containsKey("countryId_" + countryId)).thenReturn(false);
         when(countryRepository.findCountryWithCitiesAndNationsById(countryId))
                 .thenReturn(Optional.empty());
 
@@ -89,17 +89,17 @@ class CountryServiceTest {
 
         verify(countryRepository, times(1)).findCountryWithCitiesAndNationsById(countryId);
         verifyNoMoreInteractions(countryRepository);
-        verify(cacheService, times(1)).containsKey(eq("countryId_" + countryId));
+        verify(cacheService, times(1)).containsKey("countryId_" + countryId);
         verifyNoMoreInteractions(cacheService);
     }
 
     @Test
-    public void getCountryByIdWhenCached() {
+    void getCountryByIdWhenCached() {
         Long countryId = 1L;
         Country country = new Country();
         country.setId(countryId);
-        when(cacheService.containsKey(eq("countryId_" + countryId))).thenReturn(true);
-        when(cacheService.get(eq("countryId_" + countryId))).thenReturn(country);
+        when(cacheService.containsKey("countryId_" + countryId)).thenReturn(true);
+        when(cacheService.get("countryId_" + countryId)).thenReturn(country);
 
         Country result = countryService.getCountryById(countryId);
 
@@ -108,24 +108,24 @@ class CountryServiceTest {
     }
 
     @Test
-    public void addNewCountry() {
+    void addNewCountry() {
         Country country = new Country();
         List<Country> countries = new ArrayList<>();
         when(countryRepository.findCountryByName(anyString())).thenReturn(Optional.empty());
-        when(cacheService.containsKey(eq("allCountries"))).thenReturn(true);
-        when(cacheService.get(eq("allCountries"))).thenReturn(countries);
+        when(cacheService.containsKey("allCountries")).thenReturn(true);
+        when(cacheService.get("allCountries")).thenReturn(countries);
 
         Country result = countryService.addNewCountry(country);
 
         assertEquals(country, result);
-        verify(cacheService).put(eq("countryId_" + country.getId()), eq(country));
-        verify(cacheService).put(eq("allCountries"), eq(countries));
-        verify(countryRepository).save(eq(country));
+        verify(cacheService).put("countryId_" + country.getId(), country);
+        verify(cacheService).put("allCountries", countries);
+        verify(countryRepository).save(country);
         assertTrue(countries.contains(country));
     }
 
     @Test
-    public void addNewCountryWithException() {
+    void addNewCountryWithException() {
         Country country = new Country();
         country.setName("Belarus");
         when(countryRepository.findCountryByName("Belarus")).thenReturn(Optional.of(country));
@@ -168,20 +168,20 @@ class CountryServiceTest {
 
         when(countryRepository.findById(countryId)).thenReturn(Optional.of(existingCountry));
         when(countryRepository.findCountryByName(newName)).thenReturn(Optional.empty());
-        when(cacheService.containsKey(eq("allCountries"))).thenReturn(true);
-        when(cacheService.get(eq("allCountries"))).thenReturn(countries);
+        when(cacheService.containsKey("allCountries")).thenReturn(true);
+        when(cacheService.get("allCountries")).thenReturn(countries);
 
 
         Country result = countryService.updateCountry(countryId, newName, newCapital, newPopulation, newAreaSquareKm, newGdp);
 
         assertEquals(updatedCountry, result);
-        verify(cacheService).put(eq("countryId_" + updatedCountry.getId()), eq(updatedCountry));
-        verify(cacheService).put(eq("allCountries"), eq(countries));
+        verify(cacheService).put("countryId_" + updatedCountry.getId(), updatedCountry);
+        verify(cacheService).put("allCountries", countries);
         assertTrue(countries.contains(updatedCountry));
     }
 
     @Test
-    public void updateCountryWhenNotFound() {
+    void updateCountryWhenNotFound() {
         Long countryId = 1L;
         when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
 
@@ -193,7 +193,7 @@ class CountryServiceTest {
         verifyNoInteractions(cacheService);
     }
     @Test
-    public void updateCountryWhenNameExists() {
+    void updateCountryWhenNameExists() {
         Long countryId = 1L;
         String newName = "Belarus";
 
@@ -213,7 +213,7 @@ class CountryServiceTest {
     }
 
     @Test
-    public void deleteCountry() {
+    void deleteCountry() {
         Long countryId = 1L;
         Country country = new Country();
         country.setId(countryId);
@@ -221,19 +221,19 @@ class CountryServiceTest {
         List<Country> countries = new ArrayList<>();
         countries.add(country);
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
-        when(cacheService.containsKey(eq("allCountries"))).thenReturn(true);
-        when(cacheService.get(eq("allCountries"))).thenReturn(countries);
+        when(cacheService.containsKey("allCountries")).thenReturn(true);
+        when(cacheService.get("allCountries")).thenReturn(countries);
 
         countryService.deleteCountry(countryId);
 
-        verify(cacheService).remove(eq("countryId_" + countryId));
-        verify(countryRepository).deleteById(eq(countryId));
-        verify(cacheService).put(eq("allCountries"), eq(countries));
+        verify(cacheService).remove("countryId_" + countryId);
+        verify(countryRepository).deleteById(countryId);
+        verify(cacheService).put("allCountries", countries);
         assertFalse(countries.contains(country));
     }
 
     @Test
-    public void deleteCountryWhenNotFound() {
+    void deleteCountryWhenNotFound() {
         Long countryId = 1L;
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.empty());
 

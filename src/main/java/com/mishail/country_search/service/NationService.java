@@ -68,7 +68,7 @@ public class NationService {
                     .findCountryWithNationsById(countryId)
                     .orElseThrow(() -> new ObjectNotFoundException(
                             "country, which id " + countryId
-                                    + " does not exist, that's why "
+                                    + " doesn't exist, that's why "
                                     + "you can't view nations from its"));
             Set<Nation> nations = country.getNations();
             cacheService.put(ALL_NATIONS_BY_COUNTRY_ID + countryId, nations);
@@ -111,7 +111,7 @@ public class NationService {
                 .findCountryWithNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId
-                                + " does not exist, that's why "
+                                + " doesn't exist, that's why "
                                 + "you can't add nation to its"));
 
         Nation nation = nationRepository
@@ -161,7 +161,7 @@ public class NationService {
         Nation nation = nationRepository.findById(nationId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "nation with id " + nationId
-                                + " does not exist, that's why "
+                                + " does not exist, that is why "
                                 + "you can't update this"));
 
         cleanCache(nationId, nation);
@@ -196,7 +196,7 @@ public class NationService {
         Nation nation = nationRepository.findByIdWithCountries(nationId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "nation, which id " + nationId
-                                + " does not exist, that's why "
+                                + " doesn't exist, that is why "
                                 + "you can't delete its"));
 
         cleanCache(nationId, nation);
@@ -221,7 +221,7 @@ public class NationService {
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country with id " + countryId
                                 + " doesn't exist, that's why "
-                                + "you can't delete its"));
+                                + "you can not delete its"));
 
         Nation nation = nationRepository.findById(nationId)
                 .orElseThrow(() -> new ObjectNotFoundException(

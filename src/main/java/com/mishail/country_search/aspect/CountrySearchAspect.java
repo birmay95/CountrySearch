@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 public class CountrySearchAspect {
-    private Logger logger = LoggerFactory.getLogger(CountrySearchAspect.class);
+    private final Logger logger = LoggerFactory.getLogger(CountrySearchAspect.class);
 
     @Pointcut("execution(* com.mishail.country_search.controller.*.*(..))")
     public void callControllers() {
@@ -24,26 +24,26 @@ public class CountrySearchAspect {
     @Before("callControllers()")
     public void beforeCallMethod(final JoinPoint jp) {
         String args = Arrays.stream(jp.getArgs())
-                .map(a -> a.toString())
+                .map(Object::toString)
                 .collect(Collectors.joining(","));
-        logger.info("Before " + jp + ", args=[" + args + "]");
+        logger.info("Before {}, args={}", jp, args);
     }
 
     @After("callControllers()")
     public void afterCallMethod(final JoinPoint jp) {
-        logger.info("After " + jp.toShortString());
+        logger.info("After {}", jp.toShortString());
     }
 
     @AfterReturning("callControllers()")
     public void afterReturningCallMethod(final JoinPoint jp) {
-        logger.info("After returning " + jp.toShortString());
+        logger.info("After returning {}", jp.toShortString());
     }
 
     @AfterThrowing(value = "callControllers()", throwing = "exception")
     public void afterThrowingCallMethod(final JoinPoint jp,
                                         final Exception exception) {
-        logger.error("after throwing " + jp.toShortString()
-                + ", exception: " + exception.getMessage());
+        logger.error("After throwing {}, exception: {}",
+                jp.toShortString(), exception.getMessage());
     }
 
     @PostConstruct

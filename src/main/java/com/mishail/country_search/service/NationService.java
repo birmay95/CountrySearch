@@ -146,9 +146,8 @@ public class NationService {
                                           final List<Nation> nationsRequest) {
         List<Nation> addedNations = new ArrayList<>();
 
-        nationsRequest.forEach(nation -> {
-            addNewNationByCountryId(countryId, nation);
-        });
+        nationsRequest.forEach(nation -> addedNations
+                .add(addNewNationByCountryId(countryId, nation)));
 
         return addedNations;
     }

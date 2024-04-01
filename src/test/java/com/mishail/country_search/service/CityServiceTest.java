@@ -121,8 +121,16 @@ class CityServiceTest {
         country.setId(countryId);
         country.setCities(new HashSet<>());
 
+        List<City> cities = new ArrayList<>();
+        List<Country> countries = new ArrayList<>();
+        countries.add(country);
+
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
-        when(cacheService.containsKey(anyString())).thenReturn(false);
+        when(cacheService.containsKey(anyString())).thenReturn(true);
+        when(cacheService.get("allCities")).thenReturn(cities);
+        when(cacheService.get("allCitiesByCountryId_" + country.getId())).thenReturn(country.getCities());
+        when(cacheService.get("allCountries")).thenReturn(countries);
+        when(cacheService.get("countryId_" + country.getId())).thenReturn(country);
 
 
         City result = cityService.addNewCityByCountryId(countryId, cityRequest);
@@ -131,6 +139,10 @@ class CityServiceTest {
         assertTrue(country.getCities().contains(cityRequest));
         verify(cityRepository).save(cityRequest);
         verify(countryRepository).save(country);
+        verify(cacheService).put("allCities", cities);
+        verify(cacheService).put("allCitiesByCountryId_" + country.getId(), country.getCities());
+        verify(cacheService).remove("allCountries");
+        verify(cacheService).remove("countryId_" + country.getId());
     }
 
     @Test
@@ -170,6 +182,31 @@ class CityServiceTest {
     }
 
     @Test
+    void addNewCitiesByCountryId() {
+        Long countryId = 1L;
+        Country country = new Country();
+        country.setId(countryId);
+        country.setCities(new HashSet<>());
+
+        City cityOne = new City();
+        cityOne.setId(1L);
+        cityOne.setName("Grodno");
+        City cityTwo = new City();
+        cityTwo.setId(2L);
+        cityTwo.setName("Minsk");
+
+        List<City> cities = new ArrayList<>();
+        cities.add(cityOne);
+        cities.add(cityTwo);
+
+        when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
+
+        List<City> result = cityService.addNewCitiesByCountryId(countryId, cities);
+
+        assertEquals(result, cities);
+    }
+
+    @Test
     void updateCity() {
         Long cityId = 1L;
         String name = "Grodno";
@@ -205,7 +242,7 @@ class CityServiceTest {
     }
 
     @Test
-    void updateCityWhenDoesNotExist() {
+    void updateCityWhenCityDoesNotExist() {
         Long cityId = 1L;
         String name = "Minsk";
         Double population = 1000000.0;
@@ -218,6 +255,30 @@ class CityServiceTest {
         verifyNoInteractions(cacheService);
         verify(cityRepository, times(1)).findById(cityId);
         verifyNoMoreInteractions(cityRepository);
+    }
+
+    @Test
+    void updateCityWhenCountryDoesNotExist() {
+        Long cityId = 1L;
+        String name = "Minsk";
+        Double population = 1000000.0;
+        Double areaSquareKm = 500.0;
+
+        City city = new City();
+        city.setId(cityId);
+        city.setName("Grodno");
+        city.setPopulation(100000.0);
+        city.setAreaSquareKm(20000.0);
+
+        when(cityRepository.findById(cityId)).thenReturn(Optional.of(city));
+        when(countryRepository.findCountryWithCitiesByCityId(cityId)).thenReturn(Optional.empty());
+
+        assertThrows(ObjectNotFoundException.class, () -> cityService.updateCity(cityId, name, population, areaSquareKm));
+        verifyNoInteractions(cacheService);
+        verify(cityRepository, times(1)).findById(cityId);
+        verifyNoMoreInteractions(cityRepository);
+        verify(countryRepository, times(1)).findCountryWithCitiesByCityId(cityId);
+        verifyNoMoreInteractions(countryRepository);
     }
 
     @Test
@@ -341,7 +402,7 @@ class CityServiceTest {
     }
 
     @Test
-    void testDeleteCitiesByCountryIdWhenCountryDoesNotExist() {
+    void deleteCitiesByCountryIdWhenCountryDoesNotExist() {
         Long countryId = 1L;
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.empty());
 

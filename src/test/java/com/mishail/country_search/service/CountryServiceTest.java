@@ -138,6 +138,22 @@ class CountryServiceTest {
     }
 
     @Test
+    void addNewCountries() {
+        Country countryOne = new Country();
+        countryOne.setId(1L);
+        Country countryTwo  = new Country();
+        countryTwo.setId(2L);
+
+        List<Country> countries = new ArrayList<>();
+        countries.add(countryOne);
+        countries.add(countryTwo);
+
+        List<Country> result = countryService.addNewCountries(countries);
+
+        assertEquals(result, countries);
+    }
+
+    @Test
     void updateCountry() {
         List<Country> countries = new ArrayList<>();
 
@@ -239,5 +255,26 @@ class CountryServiceTest {
 
         assertThrows(ObjectNotFoundException.class, () -> countryService.deleteCountry(countryId));
         verifyNoInteractions(cacheService);
+    }
+
+    @Test
+    void deleteCountries() {
+        Country countryOne = new Country();
+        countryOne.setId(1L);
+        countryOne.setCities(new HashSet<>());
+        Country countryTwo = new Country();
+        countryTwo.setId(2L);
+        countryTwo.setCities(new HashSet<>());
+
+        List<Country> countries = new ArrayList<>();
+        countries.add(countryOne);
+        countries.add(countryTwo);
+
+        when(countryRepository.findAllWithCities()).thenReturn(countries);
+
+        countryService.deleteCountries();
+
+        verify(countryRepository).deleteAll();
+        verify(cacheService).clear();
     }
 }

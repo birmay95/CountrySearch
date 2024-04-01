@@ -224,6 +224,35 @@ class NationServiceTest {
     }
 
     @Test
+    void addNewNationsByCountryId() {
+        Long countryId = 1L;
+        String nationOneName = "Russian";
+        String nationTwoName = "Belarusian";
+        Country country = new Country();
+        country.setId(countryId);
+        country.setNations(new HashSet<>());
+
+        Nation nationOne = new Nation();
+        nationOne.setId(1L);
+        nationOne.setName(nationOneName);
+        Nation nationTwo = new Nation();
+        nationTwo.setId(2L);
+        nationTwo.setName(nationTwoName);
+
+        List<Nation> nations = new ArrayList<>();
+        nations.add(nationOne);
+        nations.add(nationTwo);
+
+        when(countryRepository.findCountryWithNationsById(countryId)).thenReturn(Optional.of(country));
+        when(nationRepository.findNationByName(nationOneName)).thenReturn(nationOne);
+        when(nationRepository.findNationByName(nationTwoName)).thenReturn(nationTwo);
+
+        List<Nation> result = nationService.addNewNationsByCountryId(countryId, nations);
+
+        assertEquals(result, nations);
+    }
+
+    @Test
     void updateNation() {
         Long nationId = 1L;
         String name = "Russian";

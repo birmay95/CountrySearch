@@ -20,7 +20,7 @@ public class ExceptionManager {
                 ex.getMessage(),
                 request.getDescription(false));
 
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ObjectExistedException.class)
@@ -32,7 +32,7 @@ public class ExceptionManager {
                 ex.getMessage(),
                 request.getDescription(false));
 
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(message, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
@@ -44,7 +44,7 @@ public class ExceptionManager {
                 ex.getMessage(),
                 request.getDescription(false));
 
-        return new ResponseEntity<ErrorMessage>(message,
+        return new ResponseEntity<>(message,
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

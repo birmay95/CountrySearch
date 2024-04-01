@@ -89,7 +89,8 @@ public class CountryService {
                                  final Double population,
                                  final Double areaSquareKm,
                                  final Double gdp) {
-        Country countryChanged = countryRepository.findCountryWithCitiesAndNationsById(countryId)
+        Country countryChanged = countryRepository
+                .findCountryWithCitiesAndNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country with id " + countryId
                                 + "can not be updated, "
@@ -135,7 +136,8 @@ public class CountryService {
     }
 
     public void deleteCountry(final Long countryId) {
-        Country country = countryRepository.findCountryWithCitiesAndNationsById(countryId)
+        Country country = countryRepository
+                .findCountryWithCitiesAndNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId + " does not exist"));
         cacheService.remove(COUNTRY_ID + country.getId());

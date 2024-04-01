@@ -35,14 +35,14 @@ public class CountrySearchAspect {
     @After("callControllers()")
     public void afterCallMethod(final JoinPoint jp) {
         if (logger.isInfoEnabled()) {
-            logger.info("After {}", jp.toString());
+            logger.info("After {}", jp);
         }
     }
 
     @AfterReturning("callControllers()")
     public void afterReturningCallMethod(final JoinPoint jp) {
         if (logger.isInfoEnabled()) {
-            logger.info("After returning {}", jp.toString());
+            logger.info("After returning {}", jp);
         }
     }
 
@@ -51,7 +51,7 @@ public class CountrySearchAspect {
                                         final Exception exception) {
         if (logger.isErrorEnabled()) {
             logger.error("After throwing {}, exception: {}",
-                    jp.toString(), exception.getMessage());
+                    jp, exception.getMessage());
         }
     }
 

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +26,7 @@ public class CountrySearchAspect {
     @Before("callControllers()")
     public void beforeCallMethod(final JoinPoint jp) {
         String args = Arrays.stream(jp.getArgs())
+                .filter(Objects::nonNull)
                 .map(Object::toString)
                 .collect(Collectors.joining(","));
         if (logger.isInfoEnabled()) {

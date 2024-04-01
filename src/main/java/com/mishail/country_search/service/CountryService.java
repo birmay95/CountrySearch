@@ -89,7 +89,7 @@ public class CountryService {
                                  final Double population,
                                  final Double areaSquareKm,
                                  final Double gdp) {
-        Country countryChanged = countryRepository.findById(countryId)
+        Country countryChanged = countryRepository.findCountryWithCitiesAndNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country with id " + countryId
                                 + "can not be updated, "
@@ -127,28 +127,20 @@ public class CountryService {
         }
 
         if (cacheService.containsKey(ALL_COUNTRIES)) {
-            List<Country> countries = (List<Country>) cacheService
-                    .get(ALL_COUNTRIES);
-            countries.remove(countryBeforeChanges);
-            countries.add(countryChanged);
-            cacheService.put(ALL_COUNTRIES, countries);
+            cacheService.remove(ALL_COUNTRIES);
         }
         cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
 
         return countryChanged;
     }
 
-    @Transactional
     public void deleteCountry(final Long countryId) {
-        Country country = countryRepository.findCountryWithCitiesById(countryId)
+        Country country = countryRepository.findCountryWithCitiesAndNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId + " does not exist"));
         cacheService.remove(COUNTRY_ID + country.getId());
         if (cacheService.containsKey(ALL_COUNTRIES)) {
-            List<Country> countries = (List<Country>) cacheService
-                    .get(ALL_COUNTRIES);
-            countries.remove(country);
-            cacheService.put(ALL_COUNTRIES, countries);
+            cacheService.remove(ALL_COUNTRIES);
         }
         country.getCities().clear();
         countryRepository.deleteById(countryId);

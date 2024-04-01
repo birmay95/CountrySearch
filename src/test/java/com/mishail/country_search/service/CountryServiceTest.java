@@ -182,29 +182,27 @@ class CountryServiceTest {
         updatedCountry.setAreaSquareKm(newAreaSquareKm);
         updatedCountry.setGdp(newGdp);
 
-        when(countryRepository.findById(countryId)).thenReturn(Optional.of(existingCountry));
+        when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.of(existingCountry));
         when(countryRepository.findCountryByName(newName)).thenReturn(Optional.empty());
         when(cacheService.containsKey("allCountries")).thenReturn(true);
-        when(cacheService.get("allCountries")).thenReturn(countries);
-
 
         Country result = countryService.updateCountry(countryId, newName, newCapital, newPopulation, newAreaSquareKm, newGdp);
 
         assertEquals(updatedCountry, result);
         verify(cacheService).put("countryId_" + updatedCountry.getId(), updatedCountry);
-        verify(cacheService).put("allCountries", countries);
+        verify(cacheService).remove("allCountries");
         assertTrue(countries.contains(updatedCountry));
     }
 
     @Test
     void updateCountryWhenNotFound() {
         Long countryId = 1L;
-        when(countryRepository.findById(countryId)).thenReturn(Optional.empty());
+        when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.empty());
 
         assertThrows(ObjectNotFoundException.class, () ->
                 countryService.updateCountry(countryId, "Belarus", "Minsk", 1000000.0, 100000.0, 1000000000.0));
 
-        verify(countryRepository, times(1)).findById(countryId);
+        verify(countryRepository, times(1)).findCountryWithCitiesAndNationsById(countryId);
         verifyNoMoreInteractions(countryRepository);
         verifyNoInteractions(cacheService);
     }
@@ -219,7 +217,7 @@ class CountryServiceTest {
         Country existingCountry = new Country();
         existingCountry.setId(2L);
         existingCountry.setName(newName);
-        when(countryRepository.findById(countryId)).thenReturn(Optional.of(country));
+        when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.of(country));
         when(countryRepository.findCountryByName(newName)).thenReturn(Optional.of(existingCountry));
 
         assertThrows(ObjectExistedException.class, () ->
@@ -234,18 +232,15 @@ class CountryServiceTest {
         Country country = new Country();
         country.setId(countryId);
         country.setCities(new HashSet<>());
-        List<Country> countries = new ArrayList<>();
-        countries.add(country);
-        when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
+        country.setNations(new HashSet<>());
+        when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.of(country));
         when(cacheService.containsKey("allCountries")).thenReturn(true);
-        when(cacheService.get("allCountries")).thenReturn(countries);
 
         countryService.deleteCountry(countryId);
 
         verify(cacheService).remove("countryId_" + countryId);
         verify(countryRepository).deleteById(countryId);
-        verify(cacheService).put("allCountries", countries);
-        assertFalse(countries.contains(country));
+        verify(cacheService).remove("allCountries");
     }
 
     @Test

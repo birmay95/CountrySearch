@@ -15,12 +15,12 @@ public class ExceptionManager {
     public ResponseEntity<ErrorMessage> objectNotFoundException(
             final ObjectNotFoundException ex, final WebRequest request) {
         ErrorMessage message = new ErrorMessage(
-                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(false));
 
-        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ObjectExistedException.class)

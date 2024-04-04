@@ -171,6 +171,7 @@ class CountryServiceTest {
         existingCountry.setPopulation(5000000.0);
         existingCountry.setAreaSquareKm(100000.0);
         existingCountry.setGdp(200000000.0);
+        existingCountry.setNations(new HashSet<>());
 
         countries.add(existingCountry);
 
@@ -181,10 +182,12 @@ class CountryServiceTest {
         updatedCountry.setPopulation(newPopulation);
         updatedCountry.setAreaSquareKm(newAreaSquareKm);
         updatedCountry.setGdp(newGdp);
+        updatedCountry.setNations(new HashSet<>());
 
         when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.of(existingCountry));
         when(countryRepository.findCountryByName(newName)).thenReturn(Optional.empty());
         when(cacheService.containsKey("allCountries")).thenReturn(true);
+        when(cacheService.containsKey("countryId_" + updatedCountry.getId())).thenReturn(true);
 
         Country result = countryService.updateCountry(countryId, newName, newCapital, newPopulation, newAreaSquareKm, newGdp);
 
@@ -235,12 +238,21 @@ class CountryServiceTest {
         country.setNations(new HashSet<>());
         when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.of(country));
         when(cacheService.containsKey("allCountries")).thenReturn(true);
+        when(cacheService.containsKey("countryId_" + country.getId())).thenReturn(true);
+        when(cacheService.containsKey("allCitiesByCountryId_"
+                + country.getId())).thenReturn(true);
+        when(cacheService.containsKey("allCities")).thenReturn(true);
+        when(cacheService.containsKey("allNationsByCountryId_" + country.getId())).thenReturn(true);
 
         countryService.deleteCountry(countryId);
 
-        verify(cacheService).remove("countryId_" + countryId);
-        verify(countryRepository).deleteById(countryId);
         verify(cacheService).remove("allCountries");
+        verify(cacheService).remove("countryId_" + countryId);
+        verify(cacheService).remove("allCitiesByCountryId_"
+                + countryId);
+        verify(cacheService).remove("allCities");
+        verify(cacheService).remove("allNationsByCountryId_" + countryId);
+        verify(countryRepository).deleteById(countryId);
     }
 
     @Test

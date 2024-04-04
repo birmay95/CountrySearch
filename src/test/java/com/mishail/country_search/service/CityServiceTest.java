@@ -120,6 +120,7 @@ class CityServiceTest {
         Country country = new Country();
         country.setId(countryId);
         country.setCities(new HashSet<>());
+        country.setNations(new HashSet<>());
 
         List<City> cities = new ArrayList<>();
         List<Country> countries = new ArrayList<>();
@@ -187,6 +188,7 @@ class CityServiceTest {
         Country country = new Country();
         country.setId(countryId);
         country.setCities(new HashSet<>());
+        country.setNations(new HashSet<>());
 
         City cityOne = new City();
         cityOne.setId(1L);
@@ -224,6 +226,7 @@ class CityServiceTest {
         Set<City> cities = new HashSet<>();
         cities.add(cityBeforeChanges);
         country.setCities(cities);
+        country.setNations(new HashSet<>());
 
         City updatedCity = new City();
         BeanUtils.copyProperties(cityBeforeChanges, updatedCity);
@@ -328,6 +331,7 @@ class CityServiceTest {
         Set<City> cities = new HashSet<>();
         cities.add(city);
         country.setCities(cities);
+        country.setNations(new HashSet<>());
 
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
         when(cityRepository.findById(cityId)).thenReturn(Optional.of(city));
@@ -388,6 +392,7 @@ class CityServiceTest {
         Country country = new Country();
         country.setId(countryId);
         country.setCities(cities);
+        country.setNations(new HashSet<>());
 
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
         when(cacheService.containsKey(anyString())).thenReturn(false);

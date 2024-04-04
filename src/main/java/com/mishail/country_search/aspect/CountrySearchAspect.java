@@ -1,5 +1,6 @@
 package com.mishail.country_search.aspect;
 
+import com.mishail.country_search.counter.ServiceCounter;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.aspectj.lang.JoinPoint;
@@ -36,8 +37,10 @@ public class CountrySearchAspect {
 
     @After("callControllers()")
     public void afterCallMethod(final JoinPoint jp) {
+        ServiceCounter.increment();
         if (logger.isInfoEnabled()) {
             logger.info("After {}", jp);
+            logger.info("Count of your accessing the service: {}", ServiceCounter.getCount());
         }
     }
 

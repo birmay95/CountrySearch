@@ -3,6 +3,7 @@ package com.mishail.country_search.service;
 import com.mishail.country_search.cache.CacheService;
 import com.mishail.country_search.exception.ObjectExistedException;
 import com.mishail.country_search.exception.ObjectNotFoundException;
+import com.mishail.country_search.model.Nation;
 import com.mishail.country_search.repository.CountryRepository;
 import com.mishail.country_search.model.City;
 import com.mishail.country_search.model.Country;
@@ -27,6 +28,11 @@ public class CityService {
     private static final String ALL_CITIES_BY_COUNTRY_ID =
             "allCitiesByCountryId_";
     private static final String ALL_CITIES = "allCities";
+    private static final String ALL_COUNTRIES_BY_NATION_ID =
+            "allCountriesByNationId_";
+    private static final String ALL_COUNTRIES = "allCountries";
+    private static final String COUNTRY_ID = "countryId_";
+
 
     private void updateCache(final Country country) {
 
@@ -36,12 +42,19 @@ public class CityService {
                     country.getCities());
         }
 
-        if (cacheService.containsKey("allCountries")) {
-            cacheService.remove("allCountries");
+        if (cacheService.containsKey(COUNTRY_ID + country.getId())) {
+            cacheService.remove(COUNTRY_ID + country.getId());
         }
 
-        if (cacheService.containsKey("countryId_" + country.getId())) {
-            cacheService.remove("countryId_" + country.getId());
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            cacheService.remove(ALL_COUNTRIES);
+        }
+
+        for(Nation nation : country.getNations()) {
+            if (cacheService.containsKey(
+                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
+                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
+            }
         }
     }
 

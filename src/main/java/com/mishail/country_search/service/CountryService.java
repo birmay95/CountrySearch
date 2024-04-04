@@ -4,6 +4,7 @@ import com.mishail.country_search.cache.CacheService;
 import com.mishail.country_search.exception.ObjectExistedException;
 import com.mishail.country_search.exception.ObjectNotFoundException;
 import com.mishail.country_search.model.Country;
+import com.mishail.country_search.model.Nation;
 import com.mishail.country_search.repository.CountryRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,16 @@ public class CountryService {
 
     private static final String ALL_COUNTRIES = "allCountries";
     private static final String COUNTRY_ID = "countryId_";
+    private static final String ALL_CITIES_BY_COUNTRY_ID =
+            "allCitiesByCountryId_";
+    private static final String ALL_CITIES = "allCities";
+    private static final String ALL_NATIONS_BY_COUNTRY_ID =
+            "allNationsByCountryId_";
+    private static final String ALL_COUNTRIES_BY_NATION_ID =
+            "allCountriesByNationId_";
 
     public List<Country> getCountries() {
+
         if (cacheService.containsKey(ALL_COUNTRIES)) {
             return (List<Country>) cacheService.get(ALL_COUNTRIES);
         } else {
@@ -35,6 +44,7 @@ public class CountryService {
     }
 
     public Country getCountryById(final Long countryId) {
+
         if (cacheService.containsKey(COUNTRY_ID + countryId)) {
             return (Country) cacheService.get(COUNTRY_ID + countryId);
         } else {
@@ -49,6 +59,7 @@ public class CountryService {
     }
 
     public Country addNewCountry(final Country country) {
+
         Optional<Country> countryOptional = countryRepository
                 .findCountryByName(country.getName());
         if (countryOptional.isPresent()) {
@@ -89,6 +100,7 @@ public class CountryService {
                                  final Double population,
                                  final Double areaSquareKm,
                                  final Double gdp) {
+
         Country countryChanged = countryRepository
                 .findCountryWithCitiesAndNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
@@ -130,25 +142,55 @@ public class CountryService {
         if (cacheService.containsKey(ALL_COUNTRIES)) {
             cacheService.remove(ALL_COUNTRIES);
         }
-        cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
+        if (cacheService.containsKey(COUNTRY_ID + countryChanged.getId())) {
+            cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
+        }
+        for(Nation nation : countryChanged.getNations()) {
+            if (cacheService.containsKey(
+                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
+                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
+            }
+        }
 
         return countryChanged;
     }
 
     public void deleteCountry(final Long countryId) {
+
         Country country = countryRepository
                 .findCountryWithCitiesAndNationsById(countryId)
                 .orElseThrow(() -> new ObjectNotFoundException(
                         "country, which id " + countryId + " does not exist"));
-        cacheService.remove(COUNTRY_ID + country.getId());
+        if (cacheService.containsKey(COUNTRY_ID + country.getId())) {
+            cacheService.remove(COUNTRY_ID + country.getId());
+        }
         if (cacheService.containsKey(ALL_COUNTRIES)) {
             cacheService.remove(ALL_COUNTRIES);
+        }
+        if (cacheService.containsKey(ALL_CITIES_BY_COUNTRY_ID
+                + country.getId())) {
+            cacheService.remove(ALL_CITIES_BY_COUNTRY_ID + country.getId());
+        }
+        if (cacheService.containsKey(ALL_CITIES)) {
+            cacheService.remove(ALL_CITIES);
+        }
+        if (cacheService.containsKey(
+                ALL_NATIONS_BY_COUNTRY_ID + country.getId())) {
+            cacheService.remove(
+                    ALL_NATIONS_BY_COUNTRY_ID + country.getId());
+        }
+        for(Nation nation : country.getNations()) {
+            if (cacheService.containsKey(
+                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
+                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
+            }
         }
         country.getCities().clear();
         countryRepository.deleteById(countryId);
     }
 
     public void deleteCountries() {
+
         List<Country> countries = countryRepository.findAllWithCities();
         for (Country country : countries) {
             country.getCities().clear();

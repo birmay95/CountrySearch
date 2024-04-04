@@ -28,6 +28,8 @@ public class NationService {
     private static final String ALL_COUNTRIES_BY_NATION_ID =
             "allCountriesByNationId_";
     private static final String ALL_NATIONS = "allNations";
+    private static final String COUNTRY_ID = "countryId_";
+    private static final String ALL_COUNTRIES = "allCountries";
 
     private void cleanCache(final Long nationId, final Nation nation) {
 
@@ -40,8 +42,8 @@ public class NationService {
                 cacheService.remove(
                         ALL_NATIONS_BY_COUNTRY_ID + country.getId());
             }
-            if (cacheService.containsKey("countryId_" + country.getId())) {
-                cacheService.remove("countryId_" + country.getId());
+            if (cacheService.containsKey(COUNTRY_ID + country.getId())) {
+                cacheService.remove(COUNTRY_ID + country.getId());
             }
         }
 
@@ -54,8 +56,8 @@ public class NationService {
             cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
         }
 
-        if (cacheService.containsKey("allCountries")) {
-            cacheService.remove("allCountries");
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            cacheService.remove(ALL_COUNTRIES);
         }
     }
 

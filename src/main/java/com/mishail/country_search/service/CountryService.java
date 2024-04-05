@@ -93,6 +93,21 @@ public class CountryService {
         return addedCountries;
     }
 
+    void updateCacheForCountry(Country countryChanged) {
+        if (cacheService.containsKey(ALL_COUNTRIES)) {
+            cacheService.remove(ALL_COUNTRIES);
+        }
+        if (cacheService.containsKey(COUNTRY_ID + countryChanged.getId())) {
+            cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
+        }
+        for(Nation nation : countryChanged.getNations()) {
+            if (cacheService.containsKey(
+                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
+                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
+            }
+        }
+    }
+
     @Transactional
     public Country updateCountry(final Long countryId,
                                  final String name,
@@ -139,18 +154,7 @@ public class CountryService {
             countryChanged.setGdp(gdp);
         }
 
-        if (cacheService.containsKey(ALL_COUNTRIES)) {
-            cacheService.remove(ALL_COUNTRIES);
-        }
-        if (cacheService.containsKey(COUNTRY_ID + countryChanged.getId())) {
-            cacheService.put(COUNTRY_ID + countryChanged.getId(), countryChanged);
-        }
-        for(Nation nation : countryChanged.getNations()) {
-            if (cacheService.containsKey(
-                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {
-                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());
-            }
-        }
+        updateCacheForCountry(countryChanged);
 
         return countryChanged;
     }

@@ -15,15 +15,13 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
-        <sonar.organization>birmay95</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <repositories>
         <repository>
             <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
+            <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
         <!-- Другие репозитории, если необходимо -->
     </repositories>
@@ -97,68 +95,67 @@
                 <version>3.11.0.3922</version>
             </plugin>
 
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-surefire-plugin</artifactId>-->
+<!--                <version>3.2.5</version>-->
+<!--            </plugin>-->
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>com/mishail/country_search/aspect/**</exclude>
+                                <exclude>com/mishail/country_search/cache/**</exclude>
+                                <exclude>com/mishail/country_search/config/**</exclude>
+                                <exclude>com/mishail/country_search/controller/**</exclude>
+                                <exclude>com/mishail/country_search/counter/**</exclude>
+                                <exclude>com/mishail/country_search/model/**</exclude>
+                                <exclude>com/mishail/country_search/repository/**</exclude>
+                                <exclude>com/mishail/country_search/exception/**</exclude>
+                                <exclude>com/mishail/country_search/CountrySearchApplication.class/**</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+
+
+
         </plugins>
     </build>
 
-    <reporting>
-        <plugins>
-            <!-- Плагин Surefire для выполнения тестов -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-            <!-- Плагин Jacoco для генерации отчетов о покрытии -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
-
     <!-- Конфигурация SonarCloud -->
-    <profiles>
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <!-- Параметры подключения к SonarCloud -->
-                <sonar.organization>birmay95</sonar.organization>
-                <sonar.projectKey>birmay95_CountrySearch</sonar.projectKey>
-                <sonar.projectName>CountrySearch</sonar.projectName>
-                <sonar.projectVersion>0.0.1-SNAPSHOT</sonar.projectVersion>
-                <!-- Путь к отчету о покрытии Jacoco -->
-                <sonar.coverage.jacoco.xmlReportPaths>sonar.coverage.jacoco.xmlReportPaths</sonar.coverage.jacoco.xmlReportPaths>
-            </properties>
-        </profile>
-    </profiles>
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>sonar</id>-->
+<!--            <activation>-->
+<!--                <activeByDefault>true</activeByDefault>-->
+<!--            </activation>-->
+<!--            <properties>-->
+<!--                &lt;!&ndash; Параметры подключения к SonarCloud &ndash;&gt;-->
+<!--                <sonar.organization>birmay95</sonar.organization>-->
+<!--                <sonar.projectKey>birmay95_CountrySearch</sonar.projectKey>-->
+<!--                &lt;!&ndash; Путь к отчету о покрытии Jacoco &ndash;&gt;-->
+<!--                <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--    </profiles>-->
 
 </project>

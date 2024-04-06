@@ -333,15 +333,21 @@ class CityServiceTest {
         country.setCities(cities);
         country.setNations(new HashSet<>());
 
+        List<City> allCities = new ArrayList<>();
+        allCities.add(city);
+
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
         when(cityRepository.findById(cityId)).thenReturn(Optional.of(city));
         when(cacheService.containsKey(anyString())).thenReturn(false);
+        when(cacheService.containsKey("allCities")).thenReturn(true);
+        when(cacheService.get("allCities")).thenReturn(allCities);
 
 
         cityService.deleteCityByIdFromCountryByCountryId(countryId, cityId);
 
         verify(cityRepository).deleteById(cityId);
         verify(countryRepository).save(country);
+        verify(cacheService).put("allCities", allCities);
         assertFalse(country.getCities().contains(city));
     }
 
@@ -394,8 +400,14 @@ class CityServiceTest {
         country.setCities(cities);
         country.setNations(new HashSet<>());
 
+        List<City> allCities = new ArrayList<>();
+        allCities.add(city1);
+        allCities.add(city2);
+
         when(countryRepository.findCountryWithCitiesById(countryId)).thenReturn(Optional.of(country));
         when(cacheService.containsKey(anyString())).thenReturn(false);
+        when(cacheService.containsKey("allCities")).thenReturn(true);
+        when(cacheService.get("allCities")).thenReturn(allCities);
 
 
         cityService.deleteCitiesByCountryId(countryId);
@@ -403,6 +415,7 @@ class CityServiceTest {
         verify(cityRepository).deleteById(city1.getId());
         verify(cityRepository).deleteById(city2.getId());
         verify(countryRepository).save(country);
+        verify(cacheService).put("allCities", allCities);
         assertTrue(country.getCities().isEmpty());
     }
 

@@ -4,6 +4,7 @@ import com.mishail.country_search.cache.CacheService;
 import com.mishail.country_search.exception.ObjectExistedException;
 import com.mishail.country_search.exception.ObjectNotFoundException;
 import com.mishail.country_search.model.Country;
+import com.mishail.country_search.model.Nation;
 import com.mishail.country_search.repository.CountryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -235,7 +233,13 @@ class CountryServiceTest {
         Country country = new Country();
         country.setId(countryId);
         country.setCities(new HashSet<>());
-        country.setNations(new HashSet<>());
+
+        Nation nation = new Nation();
+        nation.setId(1L);
+        Set<Nation> nations = new HashSet<>();
+        nations.add(nation);
+
+        country.setNations(nations);
         when(countryRepository.findCountryWithCitiesAndNationsById(countryId)).thenReturn(Optional.of(country));
         when(cacheService.containsKey("allCountries")).thenReturn(true);
         when(cacheService.containsKey("countryId_" + country.getId())).thenReturn(true);
@@ -243,6 +247,7 @@ class CountryServiceTest {
                 + country.getId())).thenReturn(true);
         when(cacheService.containsKey("allCities")).thenReturn(true);
         when(cacheService.containsKey("allNationsByCountryId_" + country.getId())).thenReturn(true);
+        when(cacheService.containsKey("allCountriesByNationId_" + nation.getId())).thenReturn(true);
 
         countryService.deleteCountry(countryId);
 
@@ -252,6 +257,7 @@ class CountryServiceTest {
                 + countryId);
         verify(cacheService).remove("allCities");
         verify(cacheService).remove("allNationsByCountryId_" + countryId);
+        verify(cacheService).remove("allCountriesByNationId_" + nation.getId());
         verify(countryRepository).deleteById(countryId);
     }
 

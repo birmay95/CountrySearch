@@ -96,12 +96,6 @@
                 <version>3.11.0.3922</version>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>3.2.5</version>-->
-<!--            </plugin>-->
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -135,28 +129,7 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-
-
         </plugins>
     </build>
-
-    <!-- Конфигурация SonarCloud -->
-<!--    <profiles>-->
-<!--        <profile>-->
-<!--            <id>sonar</id>-->
-<!--            <activation>-->
-<!--                <activeByDefault>true</activeByDefault>-->
-<!--            </activation>-->
-<!--            <properties>-->
-<!--                &lt;!&ndash; Параметры подключения к SonarCloud &ndash;&gt;-->
-<!--                <sonar.organization>birmay95</sonar.organization>-->
-<!--                <sonar.projectKey>birmay95_CountrySearch</sonar.projectKey>-->
-<!--                &lt;!&ndash; Путь к отчету о покрытии Jacoco &ndash;&gt;-->
-<!--                <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
-<!--            </properties>-->
-<!--        </profile>-->
-<!--    </profiles>-->
 
 </project>

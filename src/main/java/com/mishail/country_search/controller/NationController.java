@@ -20,6 +20,7 @@ import java.util.Set;
 @Tag(name = "Nations",
         description = "You can view, add, "
                 + "update and delete information about nations")
+@CrossOrigin
 public class NationController {
 
     private final NationService nationService;

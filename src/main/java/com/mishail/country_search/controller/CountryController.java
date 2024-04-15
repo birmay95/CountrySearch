@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping(path = "api/country")
 @Tag(name = "Countries", description = "You can view, add, update"
         + " and delete information about countries")
+@CrossOrigin
 public class CountryController {
 
     private final CountryService countryService;

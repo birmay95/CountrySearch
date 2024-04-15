@@ -18,6 +18,7 @@ import java.util.Set;
 @RequestMapping("/api")
 @Tag(name = "Cities", description = "You can view, add, update"
         + " and delete information about cities")
+@CrossOrigin
 public class CityController {
 
     private final CityService cityService;

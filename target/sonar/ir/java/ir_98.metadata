@@ -1,5 +1,0 @@
-com.mishail.country_search.controller.NationController#addNewNationByCountryId(Ljava/lang/Long;Lcom/mishail/country_search/model/Nation;)Lorg/springframework/http/ResponseEntity;
-org.springframework.http.ResponseEntity#<init>(Ljava/lang/Object;Lorg/springframework/http/HttpStatusCode;)V
-org.springframework.http.ResponseEntity#instance-init#
-==
-addNewNationByCountryId com.mishail.country_search.service.NationService#addNewNationByCountryId(Ljava/lang/Long;Lcom/mishail/country_search/model/Nation;)Lcom/mishail/country_search/model/Nation;

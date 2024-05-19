@@ -203,11 +203,11 @@ public class CityService {
 <span class="fc" id="L203">        countryRepository.save(country);</span>
 
 <span class="pc bpc" id="L205" title="1 of 2 branches missed.">        if (cacheService.containsKey(ALL_CITIES)) {</span>
-<span class="nc" id="L206">            List&lt;City&gt; allCities = (List&lt;City&gt;) cacheService.get(ALL_CITIES);</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">            for (City city : citiesBeforeChanges) {</span>
-<span class="nc" id="L208">                allCities.remove(city);</span>
-<span class="nc" id="L209">            }</span>
-<span class="nc" id="L210">            cacheService.put(ALL_CITIES, allCities);</span>
+<span class="fc" id="L206">            List&lt;City&gt; allCities = (List&lt;City&gt;) cacheService.get(ALL_CITIES);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            for (City city : citiesBeforeChanges) {</span>
+<span class="fc" id="L208">                allCities.remove(city);</span>
+<span class="fc" id="L209">            }</span>
+<span class="fc" id="L210">            cacheService.put(ALL_CITIES, allCities);</span>
         }
 
 <span class="fc" id="L213">        updateCache(country);</span>
@@ -234,9 +234,9 @@ public class CityService {
 <span class="fc" id="L234">        countryRepository.save(country);</span>
 
 <span class="pc bpc" id="L236" title="1 of 2 branches missed.">        if (cacheService.containsKey(ALL_CITIES)) {</span>
-<span class="nc" id="L237">            List&lt;City&gt; allCities = (List&lt;City&gt;) cacheService.get(ALL_CITIES);</span>
-<span class="nc" id="L238">            allCities.remove(city);</span>
-<span class="nc" id="L239">            cacheService.put(ALL_CITIES, allCities);</span>
+<span class="fc" id="L237">            List&lt;City&gt; allCities = (List&lt;City&gt;) cacheService.get(ALL_CITIES);</span>
+<span class="fc" id="L238">            allCities.remove(city);</span>
+<span class="fc" id="L239">            cacheService.put(ALL_CITIES, allCities);</span>
         }
 
 <span class="fc" id="L242">        updateCache(country);</span>

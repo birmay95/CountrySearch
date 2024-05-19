@@ -1,6 +1,0 @@
-com.mishail.country_search.controller.CityController#getCities()Lorg/springframework/http/ResponseEntity;
-org.springframework.http.ResponseEntity#<init>(Ljava/lang/Object;Lorg/springframework/http/HttpStatusCode;)V
-org.springframework.http.ResponseEntity#instance-init#
-==
-getCities com.mishail.country_search.service.CityService#getCities()Ljava/util/List;
-isEmpty java.util.List#isEmpty()Z

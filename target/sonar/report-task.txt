@@ -1,7 +1,0 @@
-organization=birmay95
-projectKey=com.mishail.country_search:CountrySearch
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.53637
-dashboardUrl=https://sonarcloud.io/dashboard?id=com.mishail.country_search%3ACountrySearch
-ceTaskId=AY6zw59lrWyjshUAokK8
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AY6zw59lrWyjshUAokK8

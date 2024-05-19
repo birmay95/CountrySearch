@@ -1,4 +1,4 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 CountrySearch,com.mishail.country_search.service,NationService,51,412,15,29,12,92,15,26,0,19
-CountrySearch,com.mishail.country_search.service,CountryService,36,388,27,35,8,90,25,19,0,13
-CountrySearch,com.mishail.country_search.service,CityService,78,431,15,31,16,90,13,28,0,18
+CountrySearch,com.mishail.country_search.service,CountryService,18,406,25,37,4,94,24,20,0,13
+CountrySearch,com.mishail.country_search.service,CityService,37,472,13,33,8,98,12,29,0,18

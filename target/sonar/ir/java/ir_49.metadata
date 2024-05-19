@@ -1,4 +1,0 @@
-com.mishail.country_search.aspect.CountrySearchAspect#initAspect()V
-==
-info org.slf4j.Logger#info(Ljava/lang/String;)V
-isInfoEnabled org.slf4j.Logger#isInfoEnabled()Z

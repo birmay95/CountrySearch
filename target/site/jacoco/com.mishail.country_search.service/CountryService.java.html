@@ -183,12 +183,12 @@ public class CountryService {
 <span class="fc" id="L183">            cacheService.remove(</span>
 <span class="fc" id="L184">                    ALL_NATIONS_BY_COUNTRY_ID + country.getId());</span>
         }
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">        for(Nation nation : country.getNations()) {</span>
-<span class="nc bnc" id="L187" title="All 2 branches missed.">            if (cacheService.containsKey(</span>
-<span class="nc" id="L188">                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {</span>
-<span class="nc" id="L189">                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        for(Nation nation : country.getNations()) {</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">            if (cacheService.containsKey(</span>
+<span class="fc" id="L188">                    ALL_COUNTRIES_BY_NATION_ID + nation.getId())) {</span>
+<span class="fc" id="L189">                cacheService.remove(ALL_COUNTRIES_BY_NATION_ID + nation.getId());</span>
             }
-<span class="nc" id="L191">        }</span>
+<span class="fc" id="L191">        }</span>
 <span class="fc" id="L192">        country.getCities().clear();</span>
 <span class="fc" id="L193">        countryRepository.deleteById(countryId);</span>
 <span class="fc" id="L194">    }</span>

@@ -1,6 +1,0 @@
-com.mishail.country_search.service.CountryService#getCountries()Ljava/util/List;
-==
-put com.mishail.country_search.cache.CacheService#put(Ljava/lang/String;Ljava/lang/Object;)V
-findAllWithCitiesAndNations com.mishail.country_search.repository.CountryRepository#findAllWithCitiesAndNations()Ljava/util/List;
-containsKey com.mishail.country_search.cache.CacheService#containsKey(Ljava/lang/String;)Z
-get com.mishail.country_search.cache.CacheService#get(Ljava/lang/String;)Ljava/lang/Object;

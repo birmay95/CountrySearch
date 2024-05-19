@@ -1,83 +1,0 @@
-
-{com.mishail.country_search.service.NationService#addNewNationsByCountryId(Ljava/lang/Long;Ljava/util/List;)Ljava/util/List;x
-l/home/mishail/IdeaProjects/CountrySearch/src/main/java/com/mishail/country_search/service/NationService.java“ “(0"1*é	
-1
-•$ •(5><
-
-•( •(3
-%0java.util.ArrayList"java.util.ArrayListl
-j
-
-•$ •(5
-%1"java.util.ArrayList#<init>()V*7
-
-__unknown_file (
-
-%0java.util.ArrayListm
-k
-
-• •(6
-addedNationsjava.util.List"__id*7
-
-__unknown_file (
-
-%0java.util.ArrayList¨
-¥
-
-— ˜(@!
-%2java.util.function.Consumer"__declareFunction*a
-
-__unknown_file (EC
-A__sonar_lambda_4$com.mishail.country_search.service.NationService–
-“
-
-__unknown_file (3
-!
-%2java.util.function.Consumer"
-addedNations"__id*<
-
-__unknown_file ( 
-
-addedNationsjava.util.List
-
-
-__unknown_file (0
-!
-%2java.util.function.Consumer"
-	countryId"__id*9
-
-__unknown_file (
-
-	countryIdjava.lang.Long°
-­
-
-__unknown_file (9
-!
-%2java.util.function.Consumer"
-NationService.this"__id*P
-
-__unknown_file (42
-0com.mishail.country_search.service.NationService€ý
-
-— ˜(A
-
-%5void":java.lang.Iterable#forEach(Ljava/util/function/Consumer;)V*>
-
-__unknown_file ("
- 
-nationsRequestjava.util.List*?
-
-__unknown_file (#
-!
-%2java.util.function.Consumer2&forEach(Ljava/util/function/Consumer;)".
-
-š š( 
-
-addedNationsjava.util.List:)
-
-“1 “(F
-	countryIdjava.lang.Long:.
-
-”* ”(K 
-nationsRequestjava.util.ListB42
-0com.mishail.country_search.service.NationServiceH

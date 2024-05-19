@@ -1,4 +1,0 @@
-com.mishail.country_search.aspect.CountrySearchAspect#afterReturningCallMethod(Lorg/aspectj/lang/JoinPoint;)V
-==
-isInfoEnabled org.slf4j.Logger#isInfoEnabled()Z
-info org.slf4j.Logger#info(Ljava/lang/String;Ljava/lang/Object;)V

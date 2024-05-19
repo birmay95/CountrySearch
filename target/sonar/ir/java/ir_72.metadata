@@ -1,5 +1,0 @@
-com.mishail.country_search.service.CountryService#deleteCountries()V
-==
-clear com.mishail.country_search.cache.CacheService#clear()V
-deleteAll org.springframework.data.repository.CrudRepository#deleteAll()V
-findAllWithCities com.mishail.country_search.repository.CountryRepository#findAllWithCities()Ljava/util/List;

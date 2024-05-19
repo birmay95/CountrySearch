@@ -1,5 +1,0 @@
-com.mishail.country_search.service.NationService#addNewNationsByCountryId(Ljava/lang/Long;Ljava/util/List;)Ljava/util/List;
-java.util.ArrayList#<init>()V
-java.util.ArrayList#instance-init#
-==
-forEach java.lang.Iterable#forEach(Ljava/util/function/Consumer;)V

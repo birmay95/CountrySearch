@@ -1,5 +1,0 @@
-com.mishail.country_search.controller.NationController#deleteNationFromCountry(Ljava/lang/Long;Ljava/lang/Long;)Lorg/springframework/http/ResponseEntity;
-org.springframework.http.ResponseEntity#instance-init#
-org.springframework.http.ResponseEntity#<init>(Lorg/springframework/http/HttpStatusCode;)V
-==
-deleteNationFromCountry com.mishail.country_search.service.NationService#deleteNationFromCountry(Ljava/lang/Long;Ljava/lang/Long;)V

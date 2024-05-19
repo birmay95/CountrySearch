@@ -5,9 +5,9 @@ services:
     image: postgres
     container_name: database
     environment:
-      POSTGRES_USER: mishail
-      POSTGRES_PASSWORD: 12348765
-      POSTGRES_DB: country_search
+      POSTGRES_USER: ${USER}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_DB: ${NAME}
     volumes:
       - country_search:/var/lib/postgresql/data
     networks:

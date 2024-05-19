@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_USER: mishail
+      POSTGRES_PASSWORD: 12348765
+      POSTGRES_DB: country_search
+    volumes:
+      - country_search:/var/lib/postgresql/data
+    networks:
+      - country_search_net
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  backend:
+    image: country_search
+    container_name: backend
+    networks:
+      - country_search_net
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      
+  frontend:
+    image: country_search_frontend
+    container_name: frontend
+    networks:
+      - country_search_net
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      - db
+volumes:
+  country_search:
+
+
+networks:
+  country_search_net:

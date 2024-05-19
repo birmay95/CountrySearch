@@ -1,8 +1,10 @@
-target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
 .scannerwork/
 /logfile.log
+/target/sonar
+/target/site
+/target/surefire-reports
+!target/
 
 ### STS ###
 .apt_generated

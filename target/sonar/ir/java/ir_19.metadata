@@ -1,0 +1,7 @@
+com.mishail.country_search.service.NationService#deleteNationFromCountry(Ljava/lang/Long;Ljava/lang/Long;)V
+java.util.Optional#orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;
+com.mishail.country_search.service.NationService#cleanCache(Ljava/lang/Long;Lcom/mishail/country_search/model/Nation;)V
+==
+findCountryWithNationsById com.mishail.country_search.repository.CountryRepository#findCountryWithNationsById(Ljava/lang/Long;)Ljava/util/Optional;
+save org.springframework.data.repository.CrudRepository#save(Ljava/lang/Object;)Ljava/lang/Object;
+findById org.springframework.data.repository.CrudRepository#findById(Ljava/lang/Object;)Ljava/util/Optional;

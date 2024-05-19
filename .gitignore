@@ -1,9 +1,6 @@
 !.mvn/wrapper/maven-wrapper.jar
 .scannerwork/
 /logfile.log
-/target/sonar
-/target/site
-/target/surefire-reports
 !target/
 
 ### STS ###

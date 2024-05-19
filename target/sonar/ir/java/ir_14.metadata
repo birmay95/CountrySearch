@@ -1,0 +1,9 @@
+com.mishail.country_search.service.NationService#getCountriesByNationId(Ljava/lang/Long;)Ljava/util/Set;
+null
+java.util.Optional#orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;
+java.util.HashSet#instance-init#
+==
+put com.mishail.country_search.cache.CacheService#put(Ljava/lang/String;Ljava/lang/Object;)V
+findByIdWithCountriesWithCities com.mishail.country_search.repository.NationRepository#findByIdWithCountriesWithCities(Ljava/lang/Long;)Ljava/util/Optional;
+containsKey com.mishail.country_search.cache.CacheService#containsKey(Ljava/lang/String;)Z
+get com.mishail.country_search.cache.CacheService#get(Ljava/lang/String;)Ljava/lang/Object;

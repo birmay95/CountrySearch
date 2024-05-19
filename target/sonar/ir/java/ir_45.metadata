@@ -1,0 +1,10 @@
+com.mishail.country_search.aspect.CountrySearchAspect#beforeCallMethod(Lorg/aspectj/lang/JoinPoint;)V
+java.util.Arrays#stream([Ljava/lang/Object;)Ljava/util/stream/Stream;
+java.util.stream.Collectors#joining(Ljava/lang/CharSequence;)Ljava/util/stream/Collector;
+==
+collect java.util.stream.Stream#collect(Ljava/util/stream/Collector;)Ljava/lang/Object;
+isInfoEnabled org.slf4j.Logger#isInfoEnabled()Z
+filter java.util.stream.Stream#filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;
+map java.util.stream.Stream#map(Ljava/util/function/Function;)Ljava/util/stream/Stream;
+getArgs org.aspectj.lang.JoinPoint#getArgs()[Ljava/lang/Object;
+info org.slf4j.Logger#info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V

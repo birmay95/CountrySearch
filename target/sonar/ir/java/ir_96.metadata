@@ -1,0 +1,6 @@
+com.mishail.country_search.controller.NationController#getNations()Lorg/springframework/http/ResponseEntity;
+org.springframework.http.ResponseEntity#<init>(Ljava/lang/Object;Lorg/springframework/http/HttpStatusCode;)V
+org.springframework.http.ResponseEntity#instance-init#
+==
+getNations com.mishail.country_search.service.NationService#getNations()Ljava/util/List;
+isEmpty java.util.List#isEmpty()Z

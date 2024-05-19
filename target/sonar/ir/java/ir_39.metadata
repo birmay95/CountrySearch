@@ -1,0 +1,3 @@
+com.mishail.country_search.cache.CacheService#clear()V
+==
+clear java.util.HashMap#clear()V

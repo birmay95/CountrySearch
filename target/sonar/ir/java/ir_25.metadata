@@ -1,0 +1,5 @@
+com.mishail.country_search.controller.CountryController#addNewCountries(Ljava/util/List;)Lorg/springframework/http/ResponseEntity;
+org.springframework.http.ResponseEntity#<init>(Ljava/lang/Object;Lorg/springframework/http/HttpStatusCode;)V
+org.springframework.http.ResponseEntity#instance-init#
+==
+addNewCountries com.mishail.country_search.service.CountryService#addNewCountries(Ljava/util/List;)Ljava/util/List;

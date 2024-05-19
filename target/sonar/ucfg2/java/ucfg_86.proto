@@ -1,0 +1,124 @@
+
+šcom.mishail.country_search.controller.NationController#addNewNationsByCountryId(Ljava/lang/Long;Ljava/util/List;)Lorg/springframework/http/ResponseEntity;|
+r/home/mishail/IdeaProjects/CountrySearch/src/main/java/com/mishail/country_search/controller/NationController.javaY( Y(@"startingBlock*¾
+startingBlockY@ ](4£
+ 
+V X(I
+%5"
+__annotate*G
+
+__unknown_file (+)
+'io.swagger.v3.oas.annotations.Operation*9
+
+__unknown_file (
+
+	countryIdjava.lang.Long£
+ 
+[ \(9
+%6"
+__annotate*G
+
+__unknown_file (+)
+'io.swagger.v3.oas.annotations.Parameter*9
+
+__unknown_file (
+
+	countryIdjava.lang.Long
+}
+\E \(N
+	countryIdjava.lang.Long"__annotation*"
+
+__unknown_file (
+
+%5*"
+
+__unknown_file (
+
+%6¡
+ž
+V X(I
+%7"
+__annotate*G
+
+__unknown_file (+)
+'io.swagger.v3.oas.annotations.Operation*7
+
+__unknown_file (
+
+nationsjava.util.List­
+ª
+] ](
+%8"
+__annotate*S
+
+__unknown_file (75
+3org.springframework.web.bind.annotation.RequestBody*7
+
+__unknown_file (
+
+nationsjava.util.List}
+{
+], ](3
+nationsjava.util.List"__annotation*"
+
+__unknown_file (
+
+%7*"
+
+__unknown_file (
+
+%8*
+1*Ã	
+1^$ ^(1¶
+³
+^$ ^(16
+%00com.mishail.country_search.service.NationService"__id*i
+
+__unknown_file (M*K8
+6com.mishail.country_search.controller.NationController"
+nationService¦£
+^$ _(=
+%1java.util.List"{com.mishail.country_search.service.NationService#addNewNationsByCountryId(Ljava/lang/Long;Ljava/util/List;)Ljava/util/List;*T
+
+__unknown_file (8
+6
+%00com.mishail.country_search.service.NationService*9
+
+__unknown_file (
+
+	countryIdjava.lang.Long*7
+
+__unknown_file (
+
+nationsjava.util.List2:addNewNationsByCountryId(Ljava/lang/Long;Ljava/util/List;)a
+_
+` `(")
+%2#org.springframework.http.HttpStatus"__id*"
+
+__unknown_file (
+""db
+^ ^(#-
+%3'org.springframework.http.ResponseEntity"'org.springframework.http.ResponseEntityË
+È
+^ `(#
+%4"lorg.springframework.http.ResponseEntity#<init>(Ljava/lang/Object;Lorg/springframework/http/HttpStatusCode;)V*K
+
+__unknown_file (/
+-
+%3'org.springframework.http.ResponseEntity*2
+
+__unknown_file (
+
+%1java.util.List*G
+
+__unknown_file (+
+)
+%2#org.springframework.http.HttpStatus";
+^ `($/
+-
+%3'org.springframework.http.ResponseEntity:'
+Z \(O
+	countryIdjava.lang.Long:%
+] ](3
+nationsjava.util.ListB:8
+6com.mishail.country_search.controller.NationControllerH

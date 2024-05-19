@@ -1,0 +1,12 @@
+com.mishail.country_search.service.NationService#updateNation(Ljava/lang/Long;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/mishail/country_search/model/Nation;
+com.mishail.country_search.exception.ObjectExistedException#<init>(Ljava/lang/String;)V
+java.util.Optional#isPresent()Z
+java.util.Optional#orElseThrow(Ljava/util/function/Supplier;)Ljava/lang/Object;
+java.util.Optional#ofNullable(Ljava/lang/Object;)Ljava/util/Optional;
+java.lang.String#isEmpty()Z
+java.util.Objects#equals(Ljava/lang/Object;Ljava/lang/Object;)Z
+com.mishail.country_search.service.NationService#cleanCache(Ljava/lang/Long;Lcom/mishail/country_search/model/Nation;)V
+com.mishail.country_search.exception.ObjectExistedException#instance-init#
+==
+findById org.springframework.data.repository.CrudRepository#findById(Ljava/lang/Object;)Ljava/util/Optional;
+findNationByName com.mishail.country_search.repository.NationRepository#findNationByName(Ljava/lang/String;)Lcom/mishail/country_search/model/Nation;

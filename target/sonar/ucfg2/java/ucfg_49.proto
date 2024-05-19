@@ -1,0 +1,113 @@
+
+xcom.mishail.country_search.service.CityService#addNewCitiesByCountryId(Ljava/lang/Long;Ljava/util/List;)Ljava/util/List;t
+j/home/mishail/IdeaProjects/CountrySearch/src/main/java/com/mishail/country_search/service/CityService.javaz z(-"startingBlock*†
+startingBlockz- {(Eù
+ö
+y y(
+%6"
+__annotate*A
+
+__unknown_file (%#
+!jakarta.transaction.Transactional*9
+
+__unknown_file (
+
+	countryIdjava.lang.Long[
+Y
+z9 z(B
+	countryIdjava.lang.Long"__annotation*"
+
+__unknown_file (
+
+%6°
+û
+y y(
+%7"
+__annotate*A
+
+__unknown_file (%#
+!jakarta.transaction.Transactional*=
+
+__unknown_file (!
+
+citiesRequestjava.util.List_
+]
+{7 {(D
+citiesRequestjava.util.List"__annotation*"
+
+__unknown_file (
+
+%7*
+1*’	
+1}! }(2<:
+}% }(0
+%0java.util.ArrayList"java.util.ArrayListj
+h
+}! }(2
+%1"java.util.ArrayList#<init>()V*7
+
+__unknown_file (
+
+%0java.util.ArrayListj
+h
+} }(3
+addedCitiesjava.util.List"__id*7
+
+__unknown_file (
+
+%0java.util.ArrayList¶
+£
+	 Ä(<!
+%2java.util.function.Consumer"__declareFunction*`
+
+__unknown_file (DB
+@__sonar_lambda_12$com.mishail.country_search.service.CityServiceî
+ë
+
+__unknown_file (2
+!
+%2java.util.function.Consumer"
+addedCities"__id*;
+
+__unknown_file (
+
+addedCitiesjava.util.Listê
+ç
+
+__unknown_file (0
+!
+%2java.util.function.Consumer"
+	countryId"__id*9
+
+__unknown_file (
+
+	countryIdjava.lang.Long¨
+©
+
+__unknown_file (7
+!
+%2java.util.function.Consumer"
+CityService.this"__id*N
+
+__unknown_file (20
+.com.mishail.country_search.service.CityService˛˚
+	 Ä(=
+
+%5void":java.lang.Iterable#forEach(Ljava/util/function/Consumer;)V*=
+
+__unknown_file (!
+
+citiesRequestjava.util.List*?
+
+__unknown_file (#
+!
+%2java.util.function.Consumer2&forEach(Ljava/util/function/Consumer;)"-
+
+Ç Ç(
+
+addedCitiesjava.util.List:'
+z. z(C
+	countryIdjava.lang.Long:+
+{& {(D
+citiesRequestjava.util.ListB20
+.com.mishail.country_search.service.CityServiceH

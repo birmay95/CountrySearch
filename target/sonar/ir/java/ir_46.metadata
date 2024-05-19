@@ -1,0 +1,6 @@
+com.mishail.country_search.aspect.CountrySearchAspect#afterCallMethod(Lorg/aspectj/lang/JoinPoint;)V
+com.mishail.country_search.counter.ServiceCounter#increment()V
+com.mishail.country_search.counter.ServiceCounter#getCount()I
+==
+isInfoEnabled org.slf4j.Logger#isInfoEnabled()Z
+info org.slf4j.Logger#info(Ljava/lang/String;Ljava/lang/Object;)V

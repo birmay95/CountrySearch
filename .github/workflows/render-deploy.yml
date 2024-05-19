@@ -23,5 +23,5 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Trigger Render deploy hook
+      - name: Deploy to Render
         run: curl ${{secrets.RENDER_DEPLOY_HOOK}}
